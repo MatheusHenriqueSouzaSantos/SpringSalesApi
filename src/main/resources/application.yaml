@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: projetoApiDeVendasEmSpring
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rojetoApiDeVendasEmSpring
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
