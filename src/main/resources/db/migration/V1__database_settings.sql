@@ -1,0 +1,1 @@
+ALTER DATABASE projeto_api_de_vendas_em_spring SET timezone TO 'UTC';
