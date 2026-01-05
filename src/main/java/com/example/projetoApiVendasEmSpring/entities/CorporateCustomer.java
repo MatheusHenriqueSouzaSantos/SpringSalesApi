@@ -1,12 +1,14 @@
 package com.example.projetoApiVendasEmSpring.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.*;
 
 @PrimaryKeyJoinColumn(name = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Entity
 public class CorporateCustomer extends Customer{
     @Setter
     @Column(name = "legal_name", nullable = false, length = 150)

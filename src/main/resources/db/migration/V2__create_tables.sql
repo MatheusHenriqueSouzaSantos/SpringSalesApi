@@ -40,11 +40,11 @@ create table customer(
                          is_active boolean not null,
                          email varchar(200) not null,
                          phone varchar(25) not null,
-                         adress_id uuid not null,
+                         address_id uuid not null,
 
                          CONSTRAINT fk_customer_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                          CONSTRAINT fk_customer_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
-                         CONSTRAINT fk_customer_adress_id FOREIGN KEY (adress_id) REFERENCES address (id) ON DELETE restrict
+                         CONSTRAINT fk_customer_address_id FOREIGN KEY (address_id) REFERENCES address (id) ON DELETE restrict
 );
 
 create table corporate_customer(

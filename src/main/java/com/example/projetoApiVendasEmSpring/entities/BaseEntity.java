@@ -8,24 +8,24 @@ import java.time.Instant;
 import java.util.UUID;
 
 @MappedSuperclass
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity {
 
     @Id
+    @Getter
     private UUID id;
-
+    @Getter
     @Column(name = "created_at",nullable = false, updatable = false)
     private Instant createdAt;
-
+    @Getter
     @Column(name="updated_at", nullable =true)
     @Setter
     private Instant updatedAt=null;
-
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", nullable = false,updatable = false)
     private AppUser createdBy;
-
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by_id", nullable = true)
     @Setter
@@ -52,5 +52,9 @@ public abstract class BaseEntity {
 
     public BaseEntity(AppUser createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
     }
 }
