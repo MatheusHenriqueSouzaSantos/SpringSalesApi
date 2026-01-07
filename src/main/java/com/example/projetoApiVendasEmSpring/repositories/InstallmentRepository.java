@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface InstallmentRepository extends BaseRepository<Installment, UUID>{
     List<Installment> findByFinancialTransactionAndIsActiveTrue(FinancialTransaction financialTransaction);
+    List<Installment> findByFinancialTransactionAndPaidTrueAndIsActiveTrue(FinancialTransaction financialTransaction);
+    List<Installment> findByFinancialTransactionAndPaidFalseAndIsActiveTrue(FinancialTransaction financialTransaction);
 }
