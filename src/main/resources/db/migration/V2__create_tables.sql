@@ -8,7 +8,7 @@ create table app_user(
                          full_name varchar(150) not null,
                          email varchar(200) not null,
                          password_hash varchar(100) not null,
-
+                         user_role varchar(30) not null,
                          CONSTRAINT fk_app_user_created_by_id FOREIGN KEY(created_by_id) REFERENCES app_user(id) ON DELETE restrict DEFERRABLE INITIALLY DEFERRED,
                          CONSTRAINT fk_app_user_updated_by_id FOREIGN KEY(updated_by_id) REFERENCES app_user(id) ON DELETE restrict
 );

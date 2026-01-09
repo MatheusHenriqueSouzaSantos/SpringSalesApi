@@ -7,7 +7,8 @@ INSERT INTO app_user(
                      is_active,
                      full_name,
                      email,
-                     password_hash)
+                     password_hash,
+                     user_role)
     VALUES (
             '00000000-0000-0000-0000-000000000001',
             now(),
@@ -17,5 +18,6 @@ INSERT INTO app_user(
             true,
             'system',
             'system@app.local',
-            'system'
+            'system',
+            'ADMIN'
 );

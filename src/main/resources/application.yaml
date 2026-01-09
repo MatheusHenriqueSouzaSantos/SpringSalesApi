@@ -16,3 +16,6 @@ spring:
       hibernate:
         jdbc :
           time_zone : UTC
+  mvc:
+    servlet:
+      path: /api

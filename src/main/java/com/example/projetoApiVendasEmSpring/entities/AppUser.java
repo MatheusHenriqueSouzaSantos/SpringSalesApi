@@ -1,16 +1,13 @@
 package com.example.projetoApiVendasEmSpring.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.example.projetoApiVendasEmSpring.entities.enums.UserRole;
+import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "app_user")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//if user is system dont show
 public class AppUser extends BaseEntity {
     @Column(name = "full_name", nullable = false, length = 150)
     @Setter
@@ -21,11 +18,15 @@ public class AppUser extends BaseEntity {
     @Setter
     @Column(name = "password_hash",nullable = false,length = 100)
     private String passwordHash;
+    @Column(name="user_role",nullable = false,length = 30)
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
-    public AppUser(AppUser createdBy, String fullName, String email, String passwordHash) {
+    public AppUser(AppUser createdBy, String fullName, String email, String passwordHash, UserRole userRole) {
         super(createdBy);
         this.fullName = fullName;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.userRole =userRole;
     }
 }
