@@ -1,7 +1,6 @@
 package com.example.projetoApiVendasEmSpring.repositories;
 
 import com.example.projetoApiVendasEmSpring.entities.AppUser;
-import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -13,17 +12,34 @@ public interface AppUserRepository extends BaseRepository<AppUser,UUID>{
     @Query("""
         select appUser
         from AppUser appUser
-        where appUser.isActive =true and
-        appUser.id <> :systemUserId
+        where appUser.id <> :systemUserId
     """)
-    public List<AppUser> findAllAppUserIsActive(@Param("systemId") UUID systemUserId);
+    public List<AppUser> findAllAppUserExceptSystemUser(@Param("systemId") UUID systemUserId);
 
     @Query("""
         select appUser
         from AppUser appUser
         where appUser.id = :id
-        and appUser.isActive=true
-        and appUser.id <> :systemId
+        and appUser.id <> :systemUserId
     """)
-    public Optional<AppUser> findAppUserIsActiveById(@Param("systemId")UUID systemId, @Param("id") UUID id);
+    public Optional<AppUser> findAppUserByIdExceptSystemUser(@Param("systemUserId")UUID systemUserId, @Param("id") UUID id);
+
+    @Query("""
+        select appUser
+        from AppUser appUser
+        where appUser.email = :email
+        and appUser.id <> :systemUserId
+    """)
+    public Optional<AppUser> findAppUserByEmailExceptSystemUser(@Param("systemUserId")UUID systemUserId, @Param("email") String email);
+
+    @Query("""
+        select
+        case
+        when count(appUser)>0 then true
+        else false
+        end
+        from AppUser appUser
+        where appUser.email = :email
+    """)
+    public boolean verifyExistenceAppUserByEmail(@Param("email")String email);
 }

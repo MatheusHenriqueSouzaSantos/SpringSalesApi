@@ -8,8 +8,8 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface BaseRepository<T,P> extends JpaRepository<T,P> {
-     List<T> findByIsActiveTrue();
+     List<T> findByActiveTrue();
 
-     Optional<T> findByIdAndIsActiveTrue(P id);
+     Optional<T> findByIdAndActiveTrue(P id);
 
 }

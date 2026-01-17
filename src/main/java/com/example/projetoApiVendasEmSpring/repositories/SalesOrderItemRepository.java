@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SalesOrderItemRepository extends BaseRepository<SalesOrderItem, UUID>{
-    public List<SalesOrderItem> findBySalesOrderAndIsActiveTrue(SalesOrder salesOrder);
+    public List<SalesOrderItem> findBySalesOrderAndActiveTrue(SalesOrder salesOrder);
 }

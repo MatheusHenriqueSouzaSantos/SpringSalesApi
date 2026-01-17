@@ -1,19 +1,24 @@
 package com.example.projetoApiVendasEmSpring.services.interfaces;
 
-import com.example.projetoApiVendasEmSpring.dtos.AppUserInputDto;
-import com.example.projetoApiVendasEmSpring.entities.AppUser;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
+import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface AppUserService {
-    List<AppUser> getAllAppUsers();
+    List<AppUserOutputDto> getAllAppUsers();
 
-    AppUser getAppUserById(UUID id);
+    AppUserOutputDto getAppUserById(UUID id);
 
-    AppUser creatAppUser(AppUserInputDto dto);
+    AppUserOutputDto getAppUserMe(UserDetailsImpl user);
 
-    AppUser updateAppUser(AppUserInputDto dto);
+    AppUserOutputDto getAppUserByEmail(String email);
 
-    void deleteAppUserById(UUID id);
+    AppUserOutputDto createAppUser(AppUserInputDto dto,UserDetailsImpl loggedUser);
+
+    AppUserOutputDto updateAppUser(UUID userId,AppUserInputDto dto,UserDetailsImpl loggedUser);
+
+    void deActivateAppUserById(UUID id, UserDetailsImpl loggedUser);
 }

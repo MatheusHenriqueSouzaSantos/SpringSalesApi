@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StockRepository extends BaseRepository<Stock, UUID>{
-    public Optional<Stock> findByProductAndIsActiveTrue(Product product);
+    public Optional<Stock> findByProductAndActiveTrue(Product product);
 }

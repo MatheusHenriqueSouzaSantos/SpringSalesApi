@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
                 .toList()
                 .toString();
 
+        return ResponseEntity.badRequest().body(new ApiErrorDto(HttpStatus.BAD_REQUEST,message));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorDto> handleTypeMissMatch(MethodArgumentTypeMismatchException ex){
+        String message= "one or more arguments are invalid";
         return ResponseEntity.badRequest().body(new ApiErrorDto(HttpStatus.BAD_REQUEST,message));
     }
 

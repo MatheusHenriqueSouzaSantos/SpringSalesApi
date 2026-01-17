@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface FinancialTransactionRepository extends BaseRepository<FinancialTransaction, UUID>{
-    Optional<FinancialTransaction> findBySalesOrderAndIsActiveTrue(SalesOrder salesOrder);
+    Optional<FinancialTransaction> findBySalesOrderAndActiveTrue(SalesOrder salesOrder);
 }

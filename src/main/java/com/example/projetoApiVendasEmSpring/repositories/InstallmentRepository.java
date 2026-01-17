@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface InstallmentRepository extends BaseRepository<Installment, UUID>{
-    List<Installment> findByFinancialTransactionAndIsActiveTrue(FinancialTransaction financialTransaction);
-    List<Installment> findByFinancialTransactionAndPaidTrueAndIsActiveTrue(FinancialTransaction financialTransaction);
-    List<Installment> findByFinancialTransactionAndPaidFalseAndIsActiveTrue(FinancialTransaction financialTransaction);
+    List<Installment> findByFinancialTransactionAndActiveTrue(FinancialTransaction financialTransaction);
+    List<Installment> findByFinancialTransactionAndPaidTrueAndActiveTrue(FinancialTransaction financialTransaction);
+    List<Installment> findByFinancialTransactionAndPaidFalseAndActiveTrue(FinancialTransaction financialTransaction);
 }
