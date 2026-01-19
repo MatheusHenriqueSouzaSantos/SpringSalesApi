@@ -16,12 +16,12 @@ public abstract class BaseEntity {
     private UUID id;
     @Column(name = "created_at",nullable = false, updatable = false)
     private Instant createdAt;
-    @Column(name="updated_at", nullable =true)
-    @Setter
-    private Instant updatedAt=null;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", nullable = false,updatable = false)
     private AppUser createdBy;
+    @Column(name="updated_at", nullable =true)
+    @Setter
+    private Instant updatedAt=null;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by_id", nullable = true)
     @Setter

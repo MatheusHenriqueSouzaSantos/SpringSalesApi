@@ -21,4 +21,6 @@ public interface AppUserService {
     AppUserOutputDto updateAppUser(UUID userId,AppUserInputDto dto,UserDetailsImpl loggedUser);
 
     void deActivateAppUserById(UUID id, UserDetailsImpl loggedUser);
+
+    void reActivateAppUserById(UUID id, UserDetailsImpl loggedUser);
 }

@@ -1,7 +1,7 @@
 package com.example.projetoApiVendasEmSpring.services;
 
-import com.example.projetoApiVendasEmSpring.Excepetions.BusinessException;
-import com.example.projetoApiVendasEmSpring.Excepetions.ResourceNotFoundException;
+import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
+import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
@@ -87,7 +87,7 @@ public class AppUserServiceImpl implements AppUserService {
 
         return appUserToDto(user);
     }
-
+    @Transactional
     public void deActivateAppUserById(UUID id, UserDetailsImpl loggedUser) {
         AppUser user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,id)
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
@@ -97,8 +97,19 @@ public class AppUserServiceImpl implements AppUserService {
         user.setUpdatedAt(Instant.now());
         user.setActive(false);
     }
+    @Transactional
+    public void reActivateAppUserById(UUID id, UserDetailsImpl loggedUser){
+        AppUser user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,id)
+                .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
-    public AppUserOutputDto appUserToDto(AppUser user){
+        AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
+
+        user.setUpdatedAt(Instant.now());
+        user.setUpdatedBy(updatedBy);
+        user.setActive(true);
+    }
+
+    private AppUserOutputDto appUserToDto(AppUser user){
         AuditAppUserDto createdBy=AuditAppUserDto.appUserToAuditAppUserDto(user.getCreatedBy());
         AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(user.getUpdatedBy());
 

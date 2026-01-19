@@ -2,7 +2,6 @@ package com.example.projetoApiVendasEmSpring.controllers;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
-import com.example.projetoApiVendasEmSpring.entities.AppUser;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.interfaces.AppUserService;
 import jakarta.validation.constraints.Email;
@@ -49,7 +48,7 @@ public class AppUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<AppUserOutputDto> createUser(@RequestBody AppUserInputDto dto,@AuthenticationPrincipal UserDetailsImpl user){
+    public ResponseEntity<AppUserOutputDto> createUser(@RequestBody AppUserInputDto dto, @AuthenticationPrincipal UserDetailsImpl user){
         AppUserOutputDto createdUserDto=service.createAppUser(dto,user);
         URI location=URI.create("/api/users/" + createdUserDto.id());
         return ResponseEntity.created(location).body(createdUserDto);
@@ -62,9 +61,16 @@ public class AppUserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deActivate(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
+    @DeleteMapping("/deactivate/{id}")
+    public ResponseEntity<?> deActivateById(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
         service.deActivateAppUserById(id,loggedUser);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/reactivate/{id}")
+    public ResponseEntity<?> reactivateById(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+        service.reActivateAppUserById(id,loggedUser);
         return ResponseEntity.noContent().build();
     }
 

@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.Excepetions;
+package com.example.projetoApiVendasEmSpring.excepetions;
 
 import lombok.Getter;
 import lombok.Setter;
