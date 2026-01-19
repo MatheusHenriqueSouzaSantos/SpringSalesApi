@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+//return stock information join with product??
 public record ProductOutputDto(
         UUID id,
         Instant createdAt,
