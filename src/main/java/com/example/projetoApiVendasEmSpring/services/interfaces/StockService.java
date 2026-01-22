@@ -10,7 +10,7 @@ public interface StockService {
 
     StockOutputDto findById(UUID id);
 
-    //create find by id product?
+    StockOutputDto findByProductId(UUID productId);
 
     StockOutputDto increaseQuantity(UUID id, StockInputDto dto, UserDetailsImpl loggedUser);
 

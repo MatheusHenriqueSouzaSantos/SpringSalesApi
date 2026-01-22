@@ -4,6 +4,7 @@ import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.interfaces.AppUserService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
+@Validated
 public class AppUserController {
 
     private final AppUserService service;
@@ -48,7 +50,7 @@ public class AppUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<AppUserOutputDto> createUser(@RequestBody AppUserInputDto dto, @AuthenticationPrincipal UserDetailsImpl user){
+    public ResponseEntity<AppUserOutputDto> createUser(@RequestBody @Valid AppUserInputDto dto, @AuthenticationPrincipal UserDetailsImpl user){
         AppUserOutputDto createdUserDto=service.createAppUser(dto,user);
         URI location=URI.create("/api/users/" + createdUserDto.id());
         return ResponseEntity.created(location).body(createdUserDto);
@@ -56,7 +58,7 @@ public class AppUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<AppUserOutputDto> updateUser(@PathVariable UUID id,@RequestBody AppUserInputDto dto,@AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<AppUserOutputDto> updateUser(@PathVariable UUID id,@RequestBody @Valid AppUserInputDto dto,@AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.updateAppUser(id,dto,loggedUser));
     }
 

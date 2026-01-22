@@ -8,5 +8,7 @@ import java.util.UUID;
 public interface ProductRepository extends BaseRepository<Product, UUID>{
     Optional<Product> findProductBySkuAndActiveTrue(String sku);
 
+    Optional<Product> findProductBySku(String sku);
+
     boolean existsBySku(String sku);
 }

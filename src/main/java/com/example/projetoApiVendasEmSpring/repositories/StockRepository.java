@@ -8,4 +8,8 @@ import java.util.UUID;
 
 public interface StockRepository extends BaseRepository<Stock, UUID>{
     public Optional<Stock> findByProductAndActiveTrue(Product product);
+
+    public Optional<Stock> findByProductId(UUID productId);
+
+    public Optional<Stock> findByProductIdAndActiveTrue(UUID productId);
 }

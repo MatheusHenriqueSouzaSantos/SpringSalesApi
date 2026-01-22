@@ -13,6 +13,7 @@ import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundExceptio
 import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.repositories.ProductRepository;
 import com.example.projetoApiVendasEmSpring.repositories.StockRepository;
+import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.interfaces.ProductService;
 import org.springframework.http.HttpStatus;
@@ -33,34 +34,51 @@ public class ProductServiceImpl implements ProductService {
 
     StockRepository stockRepository;
 
+    SecurityUtils util;
+
     private final int INIT_QUANTITY=0;
 
-    public ProductServiceImpl(ProductRepository repository, AppUserRepository appUserRepository, StockRepository stockRepository) {
+    public ProductServiceImpl(ProductRepository repository, AppUserRepository appUserRepository, StockRepository stockRepository, SecurityUtils util) {
         this.repository = repository;
         this.appUserRepository = appUserRepository;
         this.stockRepository = stockRepository;
+        this.util = util;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ProductOutputDto> findAllProduct() {
+        if(util.isAdmin()){
+            List<Product> products=repository.findAll();
+            return products.stream().map(this::entityToDto).toList();
+        }
         List<Product> products=repository.findByActiveTrue();
         return products.stream().map(this::entityToDto).toList();
     }
+
+
     @Transactional(readOnly = true)
     @Override
     public ProductOutputDto findProductById(UUID id) {
-        Product product= getProductByIdOrThrow(id);
-        return entityToDto(product);
+        if(util.isAdmin()){
+            return entityToDto(getProductByIdOrThrow(id));
+        }
+        return entityToDto(getActiveProductByIdOrThrow(id));
     }
+
 
     @Transactional(readOnly = true)
     @Override
     public ProductOutputDto findProductBySku(String sku) {
+        if(util.isAdmin()){
+            return entityToDto(repository.findProductBySku(sku)
+                    .orElseThrow(()->new ResourceNotFoundException("Product not found")));
+        }
         Product product=repository.findProductBySkuAndActiveTrue(sku).
                 orElseThrow(()->new ResourceNotFoundException("Product not found"));
         return entityToDto(product);
     }
+
 
     @Override
     @Transactional
@@ -85,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductOutputDto updateProduct(UUID id,ProductUpdateDto dto, UserDetailsImpl loggedUser) {
-        Product product=getProductByIdOrThrow(id);
+        Product product= getProductByIdOrThrow(id);
 
         BigDecimal price=new BigDecimal(dto.price());
 
@@ -105,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deActivateProductById(UUID id, UserDetailsImpl loggedUser) {
-        Product product=getProductByIdOrThrow(id);
+        Product product= getProductByIdOrThrow(id);
 
         if(!product.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product is already inactivated");
@@ -122,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void reActivateProductById(UUID id, UserDetailsImpl loggedUser) {
-        Product product=getProductByIdOrThrow(id);
+        Product product= getProductByIdOrThrow(id);
 
         if(product.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product already active");
@@ -169,8 +187,13 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    private Product getProductByIdOrThrow(UUID id){
+    private Product getActiveProductByIdOrThrow(UUID id){
         return repository.findByIdAndActiveTrue(id)
+                .orElseThrow(()->new ResourceNotFoundException("Product not found"));
+    }
+
+    private Product getProductByIdOrThrow(UUID id){
+        return repository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Product not found"));
     }
 }
