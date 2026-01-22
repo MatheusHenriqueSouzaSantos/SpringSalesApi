@@ -30,12 +30,11 @@ public class Product extends BaseEntity {
     @Setter
     private Stock stock;
 
-    public Product(AppUser createdBy, String sku, String name, String description, BigDecimal price, Stock stock) {
+    public Product(AppUser createdBy, String sku, String name, String description, BigDecimal price) {
         super(createdBy);
         this.sku = sku;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.stock = stock;
     }
 }

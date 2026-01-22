@@ -30,34 +30,34 @@ public class AppUserServiceImpl implements AppUserService {
         this.encoder=encoder;
     }
     @Transactional(readOnly = true)
-    public List<AppUserOutputDto> getAllAppUsers(){
+    public List<AppUserOutputDto> findAllAppUsers(){
         List<AppUser> users=repository.findAllAppUserExceptSystemUser(SystemUser.ID);
         List<AppUserOutputDto> dtoUsers = new ArrayList<>();
         for (AppUser user : users){
-            dtoUsers.add(appUserToDto(user));
+            dtoUsers.add(entityToDto(user));
         }
         return dtoUsers;
     }
     @Transactional(readOnly = true)
-    public AppUserOutputDto getAppUserById(UUID id) {
+    public AppUserOutputDto findAppUserById(UUID id) {
         Optional<AppUser> user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,id);
         if(user.isEmpty()){
             throw new ResourceNotFoundException();
         }
-        return appUserToDto(user.get());
+        return entityToDto(user.get());
     }
     @Transactional(readOnly = true)
     @Override
     public AppUserOutputDto getAppUserMe(UserDetailsImpl userFromRequest) {
         AppUser user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,userFromRequest.getId())
                 .orElseThrow(()-> new ResourceNotFoundException("User not found"));;
-        return appUserToDto(user);
+        return entityToDto(user);
     }
     @Transactional(readOnly = true)
-    public AppUserOutputDto getAppUserByEmail(String email) {
+    public AppUserOutputDto findAppUserByEmail(String email) {
         AppUser user=repository.findAppUserByEmailExceptSystemUser(SystemUser.ID,email)
                 .orElseThrow(()-> new ResourceNotFoundException("User not found"));
-        return appUserToDto(user);
+        return entityToDto(user);
     }
     @Transactional
     public AppUserOutputDto createAppUser(AppUserInputDto dto, UserDetailsImpl loggedUser) {
@@ -67,7 +67,7 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser createBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
         String passwordHash=encoder.encode(dto.password());
         AppUser createdUser=new AppUser(createBy,dto.fullName(),dto.email(),passwordHash,dto.role());
-        return appUserToDto(repository.save(createdUser));
+        return entityToDto(repository.save(createdUser));
     }
     //do not need to save because object is tracked
     @Transactional
@@ -85,12 +85,17 @@ public class AppUserServiceImpl implements AppUserService {
         user.setEmail(dto.email());
         user.setPasswordHash(encoder.encode(dto.password()));
 
-        return appUserToDto(user);
+        return entityToDto(user);
     }
     @Transactional
     public void deActivateAppUserById(UUID id, UserDetailsImpl loggedUser) {
         AppUser user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,id)
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
+
+        if(!user.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is already inactivated");
+        }
+
         AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
 
         user.setUpdatedBy(updatedBy);
@@ -102,6 +107,10 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,id)
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
+        if(user.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is already active");
+        }
+
         AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
 
         user.setUpdatedAt(Instant.now());
@@ -109,7 +118,7 @@ public class AppUserServiceImpl implements AppUserService {
         user.setActive(true);
     }
 
-    private AppUserOutputDto appUserToDto(AppUser user){
+    private AppUserOutputDto entityToDto(AppUser user){
         AuditAppUserDto createdBy=AuditAppUserDto.appUserToAuditAppUserDto(user.getCreatedBy());
         AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(user.getUpdatedBy());
 

@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AppUserService {
-    List<AppUserOutputDto> getAllAppUsers();
+    List<AppUserOutputDto> findAllAppUsers();
 
-    AppUserOutputDto getAppUserById(UUID id);
+    AppUserOutputDto findAppUserById(UUID id);
 
     AppUserOutputDto getAppUserMe(UserDetailsImpl user);
 
-    AppUserOutputDto getAppUserByEmail(String email);
+    AppUserOutputDto findAppUserByEmail(String email);
 
     AppUserOutputDto createAppUser(AppUserInputDto dto,UserDetailsImpl loggedUser);
 

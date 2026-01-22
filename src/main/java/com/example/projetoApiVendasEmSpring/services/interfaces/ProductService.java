@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProductService {
-    List<ProductOutputDto> getAllProduct();
+    List<ProductOutputDto> findAllProduct();
 
-    ProductOutputDto getProductById(UUID id);
+    ProductOutputDto findProductById(UUID id);
+
+    ProductOutputDto findProductBySku(String sku);
 
     ProductOutputDto createProduct(ProductCreateDto dto, UserDetailsImpl loggedUser);
 
-    ProductOutputDto updateProduct(ProductUpdateDto dto, UserDetailsImpl loggedUser);
+    ProductOutputDto updateProduct(UUID id,ProductUpdateDto dto, UserDetailsImpl loggedUser);
 
     void deActivateProductById(UUID id, UserDetailsImpl loggedUser);
 

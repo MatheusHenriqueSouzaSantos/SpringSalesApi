@@ -17,6 +17,7 @@ public record ProductOutputDto(
         String sku,
         String name,
         String description,
-        BigDecimal price
+        BigDecimal price,
+        SummaryStockDto stock
 ) {
 }

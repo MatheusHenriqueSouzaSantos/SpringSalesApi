@@ -28,12 +28,12 @@ public class AppUserController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<AppUserOutputDto>> getAllUsers(){
-        return ResponseEntity.ok(service.getAllAppUsers());
+        return ResponseEntity.ok(service.findAllAppUsers());
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<AppUserOutputDto> getUserById(@PathVariable UUID id){
-        return ResponseEntity.ok(service.getAppUserById(id));
+        return ResponseEntity.ok(service.findAppUserById(id));
     }
     @GetMapping("/me")
     public ResponseEntity<AppUserOutputDto> getUserMe(@AuthenticationPrincipal UserDetailsImpl loggedUser){
@@ -43,7 +43,7 @@ public class AppUserController {
     @Validated
     @GetMapping("/get-by-email")
     public ResponseEntity<AppUserOutputDto> getUserByEmail(@RequestParam(name = "email",required = true) @Email(message = "email in invalid format") @NotBlank(message = "email can not be blank") String email){
-        return ResponseEntity.ok(service.getAppUserByEmail(email));
+        return ResponseEntity.ok(service.findAppUserByEmail(email));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -61,15 +61,15 @@ public class AppUserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/deactivate/{id}")
-    public ResponseEntity<?> deActivateById(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deActivateById(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
         service.deActivateAppUserById(id,loggedUser);
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/reactivate/{id}")
-    public ResponseEntity<?> reactivateById(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<Void> reactivateById(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         service.reActivateAppUserById(id,loggedUser);
         return ResponseEntity.noContent().build();
     }
