@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.services;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductUpdateDto;
@@ -49,10 +49,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public List<ProductOutputDto> findAllProduct() {
         if(util.isAdmin()){
-            List<Product> products=repository.findAll();
+            List<Product> products=repository.findAllOrderByActiveDesc();
             return products.stream().map(this::entityToDto).toList();
         }
-        List<Product> products=repository.findByActiveTrue();
+        List<Product> products=repository.findByActiveTrueOrderByActiveDesc();
         return products.stream().map(this::entityToDto).toList();
     }
 
@@ -157,8 +157,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     private ProductOutputDto entityToDto(Product product){
-        AuditAppUserDto createdBy=AuditAppUserDto.appUserToAuditAppUserDto(product.getCreatedBy());
-        AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(product.getUpdatedBy());
+        AppUserAuditDto createdBy= AppUserAuditDto.appUserToAuditAppUserDto(product.getCreatedBy());
+        AppUserAuditDto updatedBy= AppUserAuditDto.appUserToAuditAppUserDto(product.getUpdatedBy());
         Stock stock=product.getStock();
         SummaryStockDto stockDto=new SummaryStockDto(stock.getId(), stock.getQuantity());
         return new ProductOutputDto(

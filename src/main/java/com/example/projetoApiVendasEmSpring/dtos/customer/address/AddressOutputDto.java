@@ -1,6 +1,6 @@
-package com.example.projetoApiVendasEmSpring.dtos.customer;
+package com.example.projetoApiVendasEmSpring.dtos.customer.address;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -8,9 +8,9 @@ import java.util.UUID;
 public record AddressOutputDto(
         UUID id,
         Instant createdAt,
-        AuditAppUserDto createdBy,
+        AppUserAuditDto createdBy,
         Instant updatedAt,
-        AuditAppUserDto updatedBy,
+        AppUserAuditDto updatedBy,
         boolean active,
         String street,
         String streetNumber,

@@ -13,6 +13,7 @@ public interface AppUserRepository extends BaseRepository<AppUser,UUID>{
         select appUser
         from AppUser appUser
         where appUser.id <> :systemUserId
+        order by appUser.active desc
     """)
     public List<AppUser> findAllAppUserExceptSystemUser(@Param("systemId") UUID systemUserId);
 

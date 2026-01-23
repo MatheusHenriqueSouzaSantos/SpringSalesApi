@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.product;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,9 +10,9 @@ import java.util.UUID;
 public record ProductOutputDto(
         UUID id,
         Instant createdAt,
-        AuditAppUserDto createdBy,
+        AppUserAuditDto createdBy,
         Instant updatedAt,
-        AuditAppUserDto updatedBy,
+        AppUserAuditDto updatedBy,
         boolean active,
         String sku,
         String name,

@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.dtos.customer;
+package com.example.projetoApiVendasEmSpring.dtos.customer.address;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
