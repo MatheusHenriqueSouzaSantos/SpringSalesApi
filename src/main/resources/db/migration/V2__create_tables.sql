@@ -22,7 +22,7 @@ create table address(
                        active boolean not null,
                        street varchar(150) not null,
                        street_number varchar(20) not null,
-                       neighborhood varchar(70) not null,
+                       neighborhood varchar(150) not null,
                        state_code varchar(2) not null,
                        city varchar(100) not null,
 
