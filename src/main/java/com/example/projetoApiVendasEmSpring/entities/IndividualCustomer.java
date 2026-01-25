@@ -18,8 +18,8 @@ public class IndividualCustomer extends Customer {
     @Column(name = "cpf", nullable = false,updatable = false, length = 11)
     private String cpf;
 
-    public IndividualCustomer(AppUser createdBy, String email, String phone, Address addressId, String fullName, String cpf) {
-        super(createdBy, email, phone, addressId);
+    public IndividualCustomer(AppUser createdBy, String email, String phone, Address address, String fullName, String cpf) {
+        super(createdBy, email, phone, address);
         this.fullName = fullName;
         this.cpf = cpf;
     }

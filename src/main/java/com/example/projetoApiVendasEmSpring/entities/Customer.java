@@ -21,12 +21,12 @@ public abstract class Customer extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @Setter
     @JoinColumn(name = "address_id", nullable = false)
-    private Address addressId;
+    private Address address;
 
-    public Customer(AppUser createdBy, String email, String phone, Address addressId) {
+    public Customer(AppUser createdBy, String email, String phone, Address address) {
         super(createdBy);
         this.email = email;
         this.phone = phone;
-        this.addressId = addressId;
+        this.address = address;
     }
 }

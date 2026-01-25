@@ -8,10 +8,11 @@ import com.example.projetoApiVendasEmSpring.dtos.customer.corporateCustomer.Corp
 import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerUpdateDto;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
-    CustomerOutPutDto findAll();
+    List<CustomerOutPutDto> findAll();
 
     CustomerOutPutDto findCustomerById(UUID id);
 

@@ -7,5 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IndividualCustomerRepository extends BaseRepository<IndividualCustomer, UUID> {
+    Optional<IndividualCustomer> findByCpf(String cpf);
+
     Optional<IndividualCustomer> findByCpfAndActiveTrue(String cpf);
 }

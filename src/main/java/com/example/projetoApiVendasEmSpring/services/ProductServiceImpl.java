@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
             List<Product> products=repository.findAllOrderByActiveDesc();
             return products.stream().map(this::entityToDto).toList();
         }
-        List<Product> products=repository.findByActiveTrueOrderByActiveDesc();
+        List<Product> products=repository.findByActiveTrue();
         return products.stream().map(this::entityToDto).toList();
     }
 

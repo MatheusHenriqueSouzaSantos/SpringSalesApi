@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public interface ProductRepository extends BaseRepository<Product, UUID>{
 
-    List<Product> findAllOrderByActiveDesc();
-
     Optional<Product> findProductBySkuAndActiveTrue(String sku);
 
     Optional<Product> findProductBySku(String sku);
