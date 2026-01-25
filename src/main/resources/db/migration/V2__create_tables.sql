@@ -25,10 +25,11 @@ create table address(
                        neighborhood varchar(150) not null,
                        state_code varchar(2) not null,
                        city varchar(100) not null,
+                       customer_id uuid not null,
 
-
-                       CONSTRAINT fk_adress_created_by_id FOREIGN KEY(created_by_id) REFERENCES app_user(id) ON DELETE restrict,
-                       CONSTRAINT fk_adress_updated_by_id FOREIGN KEY(updated_by_id) REFERENCES app_user(id) ON DELETE restrict
+                       CONSTRAINT fk_address_created_by_id FOREIGN KEY(created_by_id) REFERENCES app_user(id) ON DELETE restrict,
+                       CONSTRAINT fk_address_updated_by_id FOREIGN KEY(updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
+                       CONSTRAINT fk_address_customer_id FOREIGN KEY(customer_id) REFERENCES customer(id) ON DELETE restrict
 );
 
 create table customer(
@@ -40,11 +41,9 @@ create table customer(
                          active boolean not null,
                          email varchar(200) not null,
                          phone varchar(25) not null,
-                         address_id uuid not null,
 
                          CONSTRAINT fk_customer_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                          CONSTRAINT fk_customer_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
-                         CONSTRAINT fk_customer_address_id FOREIGN KEY (address_id) REFERENCES address (id) ON DELETE restrict
 );
 
 create table corporate_customer(

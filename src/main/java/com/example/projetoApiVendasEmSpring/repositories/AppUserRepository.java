@@ -28,6 +28,15 @@ public interface AppUserRepository extends BaseRepository<AppUser,UUID>{
     @Query("""
         select appUser
         from AppUser appUser
+        where appUser.id = :id
+        and appUser.id <> :systemUserId
+        and appUser.active=true
+    """)
+    public Optional<AppUser> findActiveAppUserByIdExceptSystemUser(@Param("systemUserId")UUID systemUserId, @Param("id") UUID id);
+
+    @Query("""
+        select appUser
+        from AppUser appUser
         where appUser.email = :email
         and appUser.id <> :systemUserId
     """)

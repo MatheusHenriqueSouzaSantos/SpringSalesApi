@@ -52,6 +52,7 @@ public class SalesOrder extends BaseEntity {
 
     @Override
     protected void onPrePersist(){
+        super.onPrePersist();
         this.orderCode= Utils.GenerateOrderCode();
     }
 }

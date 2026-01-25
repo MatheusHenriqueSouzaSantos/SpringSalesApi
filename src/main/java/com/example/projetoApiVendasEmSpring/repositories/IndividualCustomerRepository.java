@@ -10,4 +10,10 @@ public interface IndividualCustomerRepository extends BaseRepository<IndividualC
     Optional<IndividualCustomer> findByCpf(String cpf);
 
     Optional<IndividualCustomer> findByCpfAndActiveTrue(String cpf);
+
+    Optional<IndividualCustomer> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByCpf(String cpf);
 }

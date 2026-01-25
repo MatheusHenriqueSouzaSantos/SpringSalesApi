@@ -1,8 +1,6 @@
 package com.example.projetoApiVendasEmSpring.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -26,15 +24,18 @@ public class Address extends BaseEntity{
     @Column(name = "state_code",nullable = false,length = 2)
     private String stateCode;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id",nullable = false,updatable = false)
+    private Customer customer;
 
 
-    public Address(AppUser createdBy, String street, String streetNumber, String neighborhood, String city, String stateCode) {
+    public Address(AppUser createdBy, String street, String streetNumber, String neighborhood, String city, String stateCode, Customer customer) {
         super(createdBy);
         this.street = street;
         this.streetNumber = streetNumber;
         this.neighborhood = neighborhood;
         this.city = city;
         this.stateCode = stateCode;
-
+        this.customer = customer;
     }
 }

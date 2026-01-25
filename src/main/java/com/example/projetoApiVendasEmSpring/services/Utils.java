@@ -1,8 +1,11 @@
 package com.example.projetoApiVendasEmSpring.services;
 
+import org.springframework.stereotype.Component;
+
 import java.security.SecureRandom;
 import java.util.UUID;
 
+@Component
 public class Utils {
 
     private static final SecureRandom orderCodeRadom=new SecureRandom();

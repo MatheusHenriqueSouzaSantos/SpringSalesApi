@@ -22,8 +22,8 @@ public class CorporateCustomer extends Customer{
     @Column(name = "cnpj", nullable = false,updatable = false,length = 14)
     private String cnpj;
 
-    public CorporateCustomer(AppUser createdBy, String email, String phone, Address address, String legalName, String tradeName, String stateRegistration, String cnpj) {
-        super(createdBy, email, phone, address);
+    public CorporateCustomer(AppUser createdBy, String email, String phone, String legalName, String tradeName, String stateRegistration, String cnpj) {
+        super(createdBy, email, phone);
         this.legalName = legalName;
         this.tradeName = tradeName;
         this.stateRegistration = stateRegistration;

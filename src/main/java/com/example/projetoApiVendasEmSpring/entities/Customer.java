@@ -18,15 +18,14 @@ public abstract class Customer extends BaseEntity {
     @Setter
     private String phone;
 
-    @OneToOne(fetch = FetchType.LAZY)
     @Setter
-    @JoinColumn(name = "address_id", nullable = false)
+    @OneToOne(mappedBy = "customer")
     private Address address;
 
-    public Customer(AppUser createdBy, String email, String phone, Address address) {
+
+    public Customer(AppUser createdBy, String email, String phone) {
         super(createdBy);
         this.email = email;
         this.phone = phone;
-        this.address = address;
     }
 }

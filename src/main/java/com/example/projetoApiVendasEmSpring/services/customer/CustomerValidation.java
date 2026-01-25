@@ -1,13 +1,14 @@
 package com.example.projetoApiVendasEmSpring.services.customer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CustomerValidation {
 
     public boolean validateCpf(String cpf){
         if (cpf==null){
             return false;
         }
-        cpf=cpf.replaceAll("\\D","");
-
         if(cpf.length()!=11){
             return false;
         }
@@ -47,7 +48,6 @@ public class CustomerValidation {
             return false;
         }
 
-        cnpj=cnpj.replaceAll("\\D","");
         if(cnpj.length()!=14){
             return false;
         }

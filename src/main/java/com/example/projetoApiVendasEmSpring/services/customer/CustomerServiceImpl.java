@@ -4,18 +4,24 @@ import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.CorporateCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.CustomerOutPutDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.IndividualCustomerOutputDto;
+import com.example.projetoApiVendasEmSpring.dtos.customer.address.AddressInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.address.AddressOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.corporateCustomer.CorporateCustomerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.corporateCustomer.CorporateCustomerUpdateDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerUpdateDto;
+import com.example.projetoApiVendasEmSpring.entities.Address;
+import com.example.projetoApiVendasEmSpring.entities.AppUser;
 import com.example.projetoApiVendasEmSpring.entities.CorporateCustomer;
 import com.example.projetoApiVendasEmSpring.entities.IndividualCustomer;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
+import com.example.projetoApiVendasEmSpring.repositories.AddressRepository;
+import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.repositories.CorporateCustomerRepository;
 import com.example.projetoApiVendasEmSpring.repositories.IndividualCustomerRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
+import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.interfaces.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,13 +39,21 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CorporateCustomerRepository corporateCustomerRepository;
 
+    private final AddressRepository addressRepository;
+
+    private final AppUserRepository appUserRepository;
+
     private final CustomerValidation validation;
 
     private final SecurityUtils util;
 
-    public CustomerServiceImpl(IndividualCustomerRepository individualCustomerRepository, CorporateCustomerRepository corporateCustomerRepository, CustomerValidation validation, SecurityUtils util) {
+    public CustomerServiceImpl(IndividualCustomerRepository individualCustomerRepository, CorporateCustomerRepository corporateCustomerRepository,
+                               AddressRepository addressRepository, AppUserRepository appUserRepository, CustomerValidation validation,
+                               SecurityUtils util) {
         this.individualCustomerRepository = individualCustomerRepository;
         this.corporateCustomerRepository = corporateCustomerRepository;
+        this.addressRepository = addressRepository;
+        this.appUserRepository = appUserRepository;
         this.validation = validation;
         this.util = util;
     }
@@ -110,36 +124,80 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerCreateDto dto) {
+    public IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerCreateDto dto, UserDetailsImpl loggedUser) {
+        if(!validation.validateCpf(dto.cpf())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
+        }
+        if(individualCustomerRepository.existsByCpf(dto.cpf())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The cpf received is already registered");
+        }
+        if(individualCustomerRepository.existsByEmail(dto.email()) || corporateCustomerRepository.existsByEmail(dto.email())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
+        }
+        AppUser createBy=getAppUserOrThrow(loggedUser);
+        IndividualCustomer customer=new IndividualCustomer(createBy,dto.email(), dto.phone(), dto.fullName(), dto.cpf());
+        AddressInputDto addressDto=dto.address();
+        Address address=new Address(createBy,addressDto.street(),addressDto.streetNumber(),addressDto.neighborhood(),
+                addressDto.city(),addressDto.stateCode(),customer);
+        customer.setAddress(address);
+        individualCustomerRepository.save(customer);
+        addressRepository.save(address);
+
+        return entityToIndividualCustomerDto(customer);
+    }
+
+    @Transactional
+    @Override
+    public CorporateCustomerOutputDto createCorporateCustomer(CorporateCustomerCreateDto dto, UserDetailsImpl loggedUser) {
+        if(!validation.validateCnpj(dto.cnpj())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cnpj in invalid format");
+        }
+        if(corporateCustomerRepository.existsByCnpj(dto.cnpj())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The Cnpj received is already registered");
+        }
+        if(corporateCustomerRepository.existsByEmail(dto.email()) || individualCustomerRepository.existsByEmail(dto.email())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
+        }
+        AppUser createBy=getAppUserOrThrow(loggedUser);
+        CorporateCustomer customer=new CorporateCustomer(createBy,dto.email(), dto.phone(),dto.legalName(),dto.tradeName(),dto.stateRegistration(),
+                dto.cnpj());
+        AddressInputDto addressDto=dto.address();
+        Address address=new Address(createBy,addressDto.street(),addressDto.streetNumber(),addressDto.neighborhood(),
+                addressDto.city(),addressDto.stateCode(),customer);
+        customer.setAddress(address);
+        corporateCustomerRepository.save(customer);
+        addressRepository.save(address);
+
+        return entityToCorporateCustomerDto(customer);
+    }
+
+    @Transactional
+    @Override
+    public IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
+        Optional<IndividualCustomer> customerOptional=individualCustomerRepository.findByEmail(dto.email());
+        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
+        }
+        IndividualCustomer customerUpdate=individualCustomerRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(()->new ResourceNotFoundException("Individual customer not found"));
+        Address addressUpdate=customerUpdate.getAddress();
+
+    }
+
+    @Transactional
+    @Override
+    public CorporateCustomerOutputDto updatedCorporateCustomer(CorporateCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
         return null;
     }
 
     @Transactional
     @Override
-    public CorporateCustomerOutputDto createCorporateCustomer(CorporateCustomerCreateDto dtp) {
-        return null;
-    }
-
-    @Transactional
-    @Override
-    public IndividualCustomerOutputDto updateIndividualCustomer(IndividualCustomerUpdateDto dto) {
-        return null;
-    }
-
-    @Transactional
-    @Override
-    public CorporateCustomerOutputDto updatedCorporateCustomer(CorporateCustomerUpdateDto dto) {
-        return null;
-    }
-
-    @Transactional
-    @Override
-    public void deActivateCustomer(UUID id) {
+    public void deActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
 
     }
     @Transactional
     @Override
-    public void reActivateCustomer(UUID id) {
+    public void reActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
 
     }
 
@@ -214,5 +272,10 @@ public class CustomerServiceImpl implements CustomerService {
             return entityToCorporateCustomerDto(corporateCustomer.get());
         }
         throw new ResourceNotFoundException("Customer not found");
+    }
+
+    public AppUser getAppUserOrThrow(UserDetailsImpl loggedUser){
+        return appUserRepository.findByIdAndActiveTrue(loggedUser.getId()).
+                orElseThrow(()->new ResourceNotFoundException("User not found"));
     }
 }

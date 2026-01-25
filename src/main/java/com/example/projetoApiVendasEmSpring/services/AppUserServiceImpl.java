@@ -72,7 +72,7 @@ public class AppUserServiceImpl implements AppUserService {
     //do not need to save because object is tracked
     @Transactional
     public AppUserOutputDto updateAppUser(UUID userId,AppUserInputDto dto,UserDetailsImpl loggedUser) {
-        AppUser user=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,userId)
+        AppUser user=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,userId)
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
         if(repository.verifyExistenceAppUserByEmail(dto.email())){
