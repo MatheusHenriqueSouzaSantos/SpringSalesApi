@@ -10,10 +10,7 @@ import com.example.projetoApiVendasEmSpring.dtos.customer.corporateCustomer.Corp
 import com.example.projetoApiVendasEmSpring.dtos.customer.corporateCustomer.CorporateCustomerUpdateDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerUpdateDto;
-import com.example.projetoApiVendasEmSpring.entities.Address;
-import com.example.projetoApiVendasEmSpring.entities.AppUser;
-import com.example.projetoApiVendasEmSpring.entities.CorporateCustomer;
-import com.example.projetoApiVendasEmSpring.entities.IndividualCustomer;
+import com.example.projetoApiVendasEmSpring.entities.*;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.repositories.AddressRepository;
@@ -27,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,7 +85,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional(readOnly = true)
     @Override
     public CustomerOutPutDto findCustomerById(UUID id) {
-        return findCustomerByUserTypeOrThrow(id);
+        Customer customer=findCustomerByIdOrThrow(id);
+        if(customer instanceof IndividualCustomer){
+            return entityToIndividualCustomerDto((IndividualCustomer) customer);
+        }
+        return entityToCorporateCustomerDto((CorporateCustomer) customer);
     }
 
     @Transactional(readOnly = true)
@@ -174,31 +176,100 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     @Override
     public IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
+        IndividualCustomer customerUpdate= getIndividualCustomerByIdOrThrow(id);
+        if(!customerUpdate.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The user is inactive, active it to updated!");
+        }
         Optional<IndividualCustomer> customerOptional=individualCustomerRepository.findByEmail(dto.email());
         if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        IndividualCustomer customerUpdate=individualCustomerRepository.findByIdAndActiveTrue(id)
-                .orElseThrow(()->new ResourceNotFoundException("Individual customer not found"));
+        if(corporateCustomerRepository.existsByEmail(dto.email())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
+        }
         Address addressUpdate=customerUpdate.getAddress();
+        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
+        addressUpdate.setUpdatedAt(Instant.now());
+        addressUpdate.setUpdatedBy(updatedBy);
+        addressUpdate.setStreet(dto.address().street());
+        addressUpdate.setStreetNumber(dto.address().streetNumber());
+        addressUpdate.setNeighborhood(dto.address().neighborhood());
+        addressUpdate.setCity(dto.address().city());
+        addressUpdate.setStateCode(dto.address().stateCode());
 
+        customerUpdate.setUpdatedAt(Instant.now());
+        customerUpdate.setUpdatedBy(updatedBy);
+        customerUpdate.setEmail(dto.email());
+        customerUpdate.setPhone(dto.phone());
+        customerUpdate.setFullName(dto.fullName());
+
+        return entityToIndividualCustomerDto(customerUpdate);
     }
 
     @Transactional
     @Override
-    public CorporateCustomerOutputDto updatedCorporateCustomer(CorporateCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
-        return null;
+    public CorporateCustomerOutputDto updatedCorporateCustomer(UUID id, CorporateCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
+        CorporateCustomer customerUpdate= getCorporateCustomerByIdOrThrow(id);
+        if(!customerUpdate.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The user is inactive, active it to updated!");
+        }
+        Optional<CorporateCustomer> customerOptional=corporateCustomerRepository.findByEmail(dto.email());
+        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
+        }
+        if(individualCustomerRepository.existsByEmail(dto.email())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
+        }
+
+        Address addressUpdate=customerUpdate.getAddress();
+        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
+        addressUpdate.setUpdatedAt(Instant.now());
+        addressUpdate.setUpdatedBy(updatedBy);
+        addressUpdate.setStreet(dto.address().street());
+        addressUpdate.setStreetNumber(dto.address().streetNumber());
+        addressUpdate.setNeighborhood(dto.address().neighborhood());
+        addressUpdate.setCity(dto.address().city());
+        addressUpdate.setStateCode(dto.address().stateCode());
+
+        customerUpdate.setUpdatedAt(Instant.now());
+        customerUpdate.setUpdatedBy(updatedBy);
+        customerUpdate.setEmail(dto.email());
+        customerUpdate.setPhone(dto.phone());
+        customerUpdate.setLegalName(dto.legalName());
+        customerUpdate.setTradeName(dto.tradeName());
+        customerUpdate.setStateRegistration(dto.stateRegistration());
+
+        return entityToCorporateCustomerDto(customerUpdate);
     }
 
+    //just for adms
     @Transactional
     @Override
     public void deActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
+        Customer customer = findCustomerByIdOrThrow(id);
 
+        if(!customer.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The customer is already inactive");
+        }
+
+        customer.setUpdatedAt(Instant.now());
+        AppUser updatedBy=getAppUserOrThrow(loggedUser);
+        customer.setUpdatedBy(updatedBy);
+        customer.setActive(false);
     }
     @Transactional
     @Override
     public void reActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
+        Customer customer = findCustomerByIdOrThrow(id);
 
+        if(customer.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The customer is already active");
+        }
+
+        customer.setUpdatedAt(Instant.now());
+        AppUser updatedBy=getAppUserOrThrow(loggedUser);
+        customer.setUpdatedBy(updatedBy);
+        customer.setActive(true);
     }
 
     private IndividualCustomerOutputDto entityToIndividualCustomerDto(IndividualCustomer customer){
@@ -222,54 +293,45 @@ public class CustomerServiceImpl implements CustomerService {
                 customer.getStateRegistration(), customer.getCnpj());
     }
 
-//    private IndividualCustomer getIndividualCustomerActiveByIdOrThrow(UUID id){
-//        return individualCustomerRepository.findByIdAndActiveTrue(id)
-//                .orElseThrow(()->new ResourceNotFoundException("Individual customer not found"));
-//    }
-//
-//    private CorporateCustomer getCorporateCustomerActiveByIdOrThrow(UUID id){
-//        return corporateCustomerRepository.findByIdAndActiveTrue(id)
-//                .orElseThrow(()->new ResourceNotFoundException("Corporate customer not found"));
-//    }
-//
-//    private IndividualCustomer getIndividualCustomerByIdOrThrow(UUID id){
-//        return individualCustomerRepository.findById(id)
-//                .orElseThrow(()->new ResourceNotFoundException("Individual customer not found"));
-//    }
-//
-//    private CorporateCustomer getCorporateCustomerByIdOrThrow(UUID id){
-//        return corporateCustomerRepository.findById(id)
-//                .orElseThrow(()->new ResourceNotFoundException("Corporate customer not found"));
-//    }
-    public CustomerOutPutDto findCustomerByUserTypeOrThrow(UUID id){
+    private IndividualCustomer getIndividualCustomerByIdOrThrow(UUID id){
+        return individualCustomerRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Individual customer not found"));
+    }
+
+    private CorporateCustomer getCorporateCustomerByIdOrThrow(UUID id){
+        return corporateCustomerRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Corporate customer not found"));
+    }
+
+    public Customer findCustomerByIdOrThrow(UUID id){
         if(util.isAdmin()){
             return getAllCustomerByIdOrThrow(id);
         }
         return getActiveCustomerByIdOrThrow(id);
     }
 
-    public CustomerOutPutDto getActiveCustomerByIdOrThrow(UUID id){
+    public Customer getActiveCustomerByIdOrThrow(UUID id){
         Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findByIdAndActiveTrue(id);
         if(individualCustomer.isPresent()){
-            return entityToIndividualCustomerDto(individualCustomer.get());
+            return individualCustomer.get();
         }
         Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findByIdAndActiveTrue(id);
         if(corporateCustomer.isPresent()){
-            return entityToCorporateCustomerDto(corporateCustomer.get());
+            return corporateCustomer.get();
         }
         throw new ResourceNotFoundException("Customer not found");
     }
 
 
 
-    public CustomerOutPutDto getAllCustomerByIdOrThrow(UUID id){
+    public Customer getAllCustomerByIdOrThrow(UUID id){
         Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findById(id);
         if(individualCustomer.isPresent()){
-            return entityToIndividualCustomerDto(individualCustomer.get());
+            return individualCustomer.get();
         }
         Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findById(id);
         if(corporateCustomer.isPresent()){
-            return entityToCorporateCustomerDto(corporateCustomer.get());
+            return corporateCustomer.get();
         }
         throw new ResourceNotFoundException("Customer not found");
     }

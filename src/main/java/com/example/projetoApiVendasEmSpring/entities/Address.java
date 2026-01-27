@@ -6,21 +6,21 @@ import lombok.*;
 @Entity
 @Table(name = "address")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address extends BaseEntity{
+    @Setter
     @Column(name = "street",nullable = false)
     private String street;
-
+    @Setter
     @Column(name = "street_number",nullable = false)
     private String streetNumber;
-
+    @Setter
     @Column(name = "neighborhood", nullable = false)
     private String neighborhood;
-
+    @Setter
     @Column(name = "city",nullable = false)
     private String city;
-
+    @Setter
     @Column(name = "state_code",nullable = false,length = 2)
     private String stateCode;
 

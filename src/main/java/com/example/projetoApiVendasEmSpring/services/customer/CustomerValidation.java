@@ -12,7 +12,7 @@ public class CustomerValidation {
         if(cpf.length()!=11){
             return false;
         }
-        if(cpf.matches("(\\d)\\1{10}")){
+        if(!cpf.matches("//d{11}")){
             return false;
         }
         int sum=0;
@@ -47,11 +47,10 @@ public class CustomerValidation {
         if (cnpj==null){
             return false;
         }
-
         if(cnpj.length()!=14){
             return false;
         }
-        if(cnpj.matches("(\\d)\\1{13}")){
+        if(!cnpj.matches("//d{14}")){
             return false;
         }
         int[] weight1 = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};

@@ -13,4 +13,6 @@ public interface CorporateCustomerRepository extends BaseRepository<CorporateCus
     boolean existsByEmail(String email);
 
     boolean existsByCnpj(String cnpj);
+
+    Optional<CorporateCustomer> findByEmail(String email);
 }
