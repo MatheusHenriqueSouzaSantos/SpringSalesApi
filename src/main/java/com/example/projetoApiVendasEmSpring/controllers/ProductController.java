@@ -29,21 +29,32 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductOutputDto>> getAllActiveProducts(){
+    public ResponseEntity<List<ProductOutputDto>> getAllProducts(){
         return ResponseEntity.ok(service.findAllProduct());
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductOutputDto> getActiveProductById(@PathVariable UUID id){
+    public ResponseEntity<ProductOutputDto> getProductById(@PathVariable UUID id){
         return ResponseEntity.ok(service.findProductById(id));
+    }
+
+    @GetMapping("/active/{id}")
+    public ResponseEntity<ProductOutputDto> getActiveProductById(@PathVariable UUID id){
+        return ResponseEntity.ok(service.findActiveProductById(id));
     }
 
 
     @GetMapping("/get-product-by-sku/{sku}")
-    public ResponseEntity<ProductOutputDto> getActiveProductBySku(
+    public ResponseEntity<ProductOutputDto> getProductBySku(
             @PathVariable @Size(min = 6, max = 6, message = "sku must contains six characters") String sku){
         return ResponseEntity.ok(service.findProductBySku(sku));
+    }
+
+    @GetMapping("/active/get-product-by-sku/{sku}")
+    public ResponseEntity<ProductOutputDto> getActiveProductBySku(
+            @PathVariable @Size(min = 6, max = 6, message = "sku must contains six characters") String sku){
+        return ResponseEntity.ok(service.findActiveProductBySku(sku));
     }
 
 

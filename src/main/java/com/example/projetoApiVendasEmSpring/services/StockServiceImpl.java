@@ -30,24 +30,17 @@ public class StockServiceImpl implements StockService {
     @Transactional(readOnly = true)
     @Override
     public StockOutputDto findById(UUID id) {
-        if(util.isAdmin()){
-            Stock stock=repository.findById(id)
-                    .orElseThrow(()->new ResourceNotFoundException("Stock not found"));
-            return entityToDto(stock);
-        }
-        return entityToDto(getStockByIdAndActiveOrThrow(id));
+        Stock stock=repository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Stock not found"));
+        return entityToDto(stock);
     }
 
     @Override
     public StockOutputDto findByProductId(UUID productId) {
-        if(util.isAdmin()){
-            Stock stock=repository.findByProductId(productId)
-                    .orElseThrow(()->new ResourceNotFoundException("Stock not found"));
+        Stock stock=repository.findByProductId(productId)
+                .orElseThrow(()->new ResourceNotFoundException("Stock not found"));
 
-            return entityToDto(stock);
-        }
-        return entityToDto(repository.findByProductIdAndActiveTrue(productId)
-                .orElseThrow(()->new ResourceNotFoundException("stock not found")));
+        return entityToDto(stock);
     }
 
     @Override

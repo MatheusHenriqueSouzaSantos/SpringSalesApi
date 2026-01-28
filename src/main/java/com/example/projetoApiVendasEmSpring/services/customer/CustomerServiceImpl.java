@@ -59,38 +59,37 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional(readOnly = true)
     @Override
     public List<CustomerOutPutDto> findAll() {
-        if(util.isAdmin()){
-            List<IndividualCustomer> individualCustomers=individualCustomerRepository.findAllOrderByActiveDesc();
-            List<CorporateCustomer> corporateCustomers=corporateCustomerRepository.findAllOrderByActiveDesc();
+       List<IndividualCustomer> individualCustomers=individualCustomerRepository.findAllOrderByActiveDesc();
+       List<CorporateCustomer> corporateCustomers=corporateCustomerRepository.findAllOrderByActiveDesc();
 
-            List<CustomerOutPutDto> customersDto=new ArrayList<>();
+       List<CustomerOutPutDto> customersDto=new ArrayList<>();
 
-            customersDto.addAll(individualCustomers.stream().map(this::entityToIndividualCustomerDto).toList());
-            customersDto.addAll(corporateCustomers.stream().map(this::entityToCorporateCustomerDto).toList());
+       customersDto.addAll(individualCustomers.stream().map(this::entityToIndividualCustomerDto).toList());
+       customersDto.addAll(corporateCustomers.stream().map(this::entityToCorporateCustomerDto).toList());
 
-            return customersDto;
-        }
-        List<IndividualCustomer> individualCustomers=individualCustomerRepository.findByActiveTrue();
-        List<CorporateCustomer> corporateCustomers = corporateCustomerRepository.findByActiveTrue();
-
-        List<CustomerOutPutDto> customersDto=new ArrayList<>();
-
-        customersDto.addAll(individualCustomers.stream().map(this::entityToIndividualCustomerDto).toList());
-        customersDto.addAll(corporateCustomers.stream().map(this::entityToCorporateCustomerDto).toList());
-
-        return customersDto;
+       return customersDto;
 
     }
 
     @Transactional(readOnly = true)
     @Override
     public CustomerOutPutDto findCustomerById(UUID id) {
-        Customer customer=findCustomerByIdOrThrow(id);
+        Customer customer= getIndividualOrCorporateCustomerByIdOrThrow(id);
         if(customer instanceof IndividualCustomer){
             return entityToIndividualCustomerDto((IndividualCustomer) customer);
         }
         return entityToCorporateCustomerDto((CorporateCustomer) customer);
     }
+
+    @Override
+    public CustomerOutPutDto findActiveCustomerById(UUID id) {
+        Customer customer= getActiveIndividualOrCorprateCustomerByIdOrThrow(id);
+        if(customer instanceof IndividualCustomer){
+            return entityToIndividualCustomerDto((IndividualCustomer) customer);
+        }
+        return entityToCorporateCustomerDto((CorporateCustomer) customer);
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -98,10 +97,16 @@ public class CustomerServiceImpl implements CustomerService {
         if(!validation.validateCpf(cpf)){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
         }
-        if(util.isAdmin()){
-             IndividualCustomer customer=individualCustomerRepository.findByCpf(cpf)
-                    .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
-             return entityToIndividualCustomerDto(customer);
+        IndividualCustomer customer=individualCustomerRepository.findByCpf(cpf)
+                .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
+        return entityToIndividualCustomerDto(customer);
+
+    }
+
+    @Override
+    public IndividualCustomerOutputDto findActiveCustomerByCpf(String cpf) {
+        if(!validation.validateCpf(cpf)){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
         }
         IndividualCustomer customer=individualCustomerRepository.findByCpfAndActiveTrue(cpf)
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
@@ -114,10 +119,15 @@ public class CustomerServiceImpl implements CustomerService {
         if(!validation.validateCnpj(cnpj)){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Cnpj in invalid format");
         }
-        if(util.isAdmin()){
-            CorporateCustomer customer=corporateCustomerRepository.findByCnpj(cnpj)
-                    .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
-            return entityToCorporateCustomerDto(customer);
+        CorporateCustomer customer=corporateCustomerRepository.findByCnpj(cnpj)
+                .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
+        return entityToCorporateCustomerDto(customer);
+    }
+
+    @Override
+    public CorporateCustomerOutputDto findActiveCustomerByCnpj(String cnpj) {
+        if(!validation.validateCnpj(cnpj)){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cnpj in invalid format");
         }
         CorporateCustomer customer=corporateCustomerRepository.findByCnpjAndActiveTrue(cnpj)
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
@@ -178,7 +188,7 @@ public class CustomerServiceImpl implements CustomerService {
     public IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
         IndividualCustomer customerUpdate= getIndividualCustomerByIdOrThrow(id);
         if(!customerUpdate.isActive()){
-            throw new BusinessException(HttpStatus.BAD_REQUEST,"The user is inactive, active it to updated!");
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is inactive, active it first to update");
         }
         Optional<IndividualCustomer> customerOptional=individualCustomerRepository.findByEmail(dto.email());
         if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
@@ -211,7 +221,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CorporateCustomerOutputDto updatedCorporateCustomer(UUID id, CorporateCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
         CorporateCustomer customerUpdate= getCorporateCustomerByIdOrThrow(id);
         if(!customerUpdate.isActive()){
-            throw new BusinessException(HttpStatus.BAD_REQUEST,"The user is inactive, active it to updated!");
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is inactive, active it first to update");
         }
         Optional<CorporateCustomer> customerOptional=corporateCustomerRepository.findByEmail(dto.email());
         if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
@@ -246,7 +256,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     @Override
     public void deActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
-        Customer customer = findCustomerByIdOrThrow(id);
+        Customer customer = getIndividualOrCorporateCustomerByIdOrThrow(id);
 
         if(!customer.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The customer is already inactive");
@@ -260,7 +270,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     @Override
     public void reActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
-        Customer customer = findCustomerByIdOrThrow(id);
+        Customer customer = getIndividualOrCorporateCustomerByIdOrThrow(id);
 
         if(customer.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The customer is already active");
@@ -303,14 +313,19 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(()->new ResourceNotFoundException("Corporate customer not found"));
     }
 
-    public Customer findCustomerByIdOrThrow(UUID id){
-        if(util.isAdmin()){
-            return getAllCustomerByIdOrThrow(id);
+    private Customer getIndividualOrCorporateCustomerByIdOrThrow(UUID id){
+        Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findById(id);
+        if(individualCustomer.isPresent()){
+            return individualCustomer.get();
         }
-        return getActiveCustomerByIdOrThrow(id);
+        Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findById(id);
+        if(corporateCustomer.isPresent()){
+            return corporateCustomer.get();
+        }
+        throw new ResourceNotFoundException("Customer not found");
     }
 
-    public Customer getActiveCustomerByIdOrThrow(UUID id){
+    private Customer getActiveIndividualOrCorprateCustomerByIdOrThrow(UUID id){
         Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findByIdAndActiveTrue(id);
         if(individualCustomer.isPresent()){
             return individualCustomer.get();
@@ -323,20 +338,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
-
-    public Customer getAllCustomerByIdOrThrow(UUID id){
-        Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findById(id);
-        if(individualCustomer.isPresent()){
-            return individualCustomer.get();
-        }
-        Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findById(id);
-        if(corporateCustomer.isPresent()){
-            return corporateCustomer.get();
-        }
-        throw new ResourceNotFoundException("Customer not found");
-    }
-
-    public AppUser getAppUserOrThrow(UserDetailsImpl loggedUser){
+    private AppUser getAppUserOrThrow(UserDetailsImpl loggedUser){
         return appUserRepository.findByIdAndActiveTrue(loggedUser.getId()).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
     }

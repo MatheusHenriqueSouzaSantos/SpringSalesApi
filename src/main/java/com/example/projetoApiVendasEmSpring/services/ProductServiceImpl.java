@@ -48,34 +48,37 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductOutputDto> findAllProduct() {
-        if(util.isAdmin()){
-            List<Product> products=repository.findAllOrderByActiveDesc();
-            return products.stream().map(this::entityToDto).toList();
-        }
-        List<Product> products=repository.findByActiveTrue();
+        List<Product> products=repository.findAllOrderByActiveDesc();
         return products.stream().map(this::entityToDto).toList();
+
     }
 
 
     @Transactional(readOnly = true)
     @Override
     public ProductOutputDto findProductById(UUID id) {
-        if(util.isAdmin()){
-            return entityToDto(getProductByIdOrThrow(id));
-        }
-        return entityToDto(getActiveProductByIdOrThrow(id));
+        return entityToDto(getProductByIdOrThrow(id));
+    }
+
+    @Override
+    public ProductOutputDto findActiveProductById(UUID id) {
+        Product product=repository.findByIdAndActiveTrue(id)
+                .orElseThrow(()->new ResourceNotFoundException("Product not found"));
+        return entityToDto(product);
     }
 
 
     @Transactional(readOnly = true)
     @Override
     public ProductOutputDto findProductBySku(String sku) {
-        if(util.isAdmin()){
-            return entityToDto(repository.findProductBySku(sku)
-                    .orElseThrow(()->new ResourceNotFoundException("Product not found")));
-        }
-        Product product=repository.findProductBySkuAndActiveTrue(sku).
-                orElseThrow(()->new ResourceNotFoundException("Product not found"));
+        return entityToDto(repository.findProductBySku(sku)
+                .orElseThrow(()->new ResourceNotFoundException("Product not found")));
+    }
+
+    @Override
+    public ProductOutputDto findActiveProductBySku(String sku) {
+        Product product=repository.findProductBySkuAndActiveTrue(sku)
+                .orElseThrow(()->new ResourceNotFoundException("Product not found"));
         return entityToDto(product);
     }
 
@@ -104,6 +107,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductOutputDto updateProduct(UUID id,ProductUpdateDto dto, UserDetailsImpl loggedUser) {
         Product product= getProductByIdOrThrow(id);
+
+        if(!product.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The product is inactive, active it to update");
+        }
 
         BigDecimal price=new BigDecimal(dto.price());
 

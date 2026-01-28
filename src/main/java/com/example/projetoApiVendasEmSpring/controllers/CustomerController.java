@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
-//normal user can see inactive customers??
+// active end-point are used when to search associate at order
     private final CustomerService service;
 
     public CustomerController(CustomerService service) {
@@ -39,14 +39,29 @@ public class CustomerController {
         return ResponseEntity.ok(service.findCustomerById(id));
     }
 
+    @GetMapping("/active/{id}")
+    public ResponseEntity<CustomerOutPutDto> findActiveCustomerById(@PathVariable UUID id){
+        return ResponseEntity.ok(service.findActiveCustomerById(id));
+    }
+
     @GetMapping("/find-by-cpf{cpf}")
     public ResponseEntity<IndividualCustomerOutputDto> findCustomerByCpf(@PathVariable String cpf){
         return ResponseEntity.ok(service.findCustomerByCpf(cpf));
     }
 
+    @GetMapping("/active/find-by-cpf{cpf}")
+    public ResponseEntity<IndividualCustomerOutputDto> findActiveCustomerByCpf(@PathVariable String cpf){
+        return ResponseEntity.ok(service.findActiveCustomerByCpf(cpf));
+    }
+
     @GetMapping("/find-by-cnpj{cnpj}")
     public ResponseEntity<CorporateCustomerOutputDto> findCustomerByCnpj(@PathVariable String cnpj){
         return ResponseEntity.ok(service.findCustomerByCnpj(cnpj));
+    }
+
+    @GetMapping("/active/find-by-cnpj{cnpj}")
+    public ResponseEntity<CorporateCustomerOutputDto> findActiveCustomerByCnpj(@PathVariable String cnpj){
+        return ResponseEntity.ok(service.findActiveCustomerByCnpj(cnpj));
     }
 
     @PostMapping("/individual-customer")

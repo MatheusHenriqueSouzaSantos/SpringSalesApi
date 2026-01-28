@@ -13,7 +13,11 @@ public interface ProductService {
 
     ProductOutputDto findProductById(UUID id);
 
+    ProductOutputDto findActiveProductById(UUID id);
+
     ProductOutputDto findProductBySku(String sku);
+
+    ProductOutputDto findActiveProductBySku(String sku);
 
     ProductOutputDto createProduct(ProductCreateDto dto, UserDetailsImpl loggedUser);
 

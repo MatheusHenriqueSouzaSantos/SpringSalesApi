@@ -13,13 +13,21 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
+
+    //the actives methods are used to search at the order moment
     List<CustomerOutPutDto> findAll();
 
     CustomerOutPutDto findCustomerById(UUID id);
 
+    CustomerOutPutDto findActiveCustomerById(UUID id);
+
     IndividualCustomerOutputDto findCustomerByCpf(String cpf);
 
+    IndividualCustomerOutputDto findActiveCustomerByCpf(String cpf);
+
     CorporateCustomerOutputDto findCustomerByCnpj(String cnpj);
+
+    CorporateCustomerOutputDto findActiveCustomerByCnpj(String cnpj);
 
     IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerCreateDto dto, UserDetailsImpl loggedUser);
 
