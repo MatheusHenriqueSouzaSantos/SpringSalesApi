@@ -3,11 +3,13 @@ package com.example.projetoApiVendasEmSpring.security;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -35,10 +37,8 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return authorities;
+        return authorities.stream().map((a)-> new SimpleGrantedAuthority("ROLE_"+a.getAuthority())).toList();
     }
-
-    //remeber to create userDetailsService
 
     @Override
     public boolean isAccountNonExpired() {

@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
@@ -75,7 +72,9 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser user=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,userId)
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
-        if(repository.verifyExistenceAppUserByEmail(dto.email())){
+        Optional<AppUser> existingUserWithReceiveEmail =repository.findAppUserByEmailExceptSystemUser(SystemUser.ID, dto.email());
+
+        if(existingUserWithReceiveEmail.isPresent() && existingUserWithReceiveEmail.get().getId()!= userId){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a user with this email");
         }
         AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();

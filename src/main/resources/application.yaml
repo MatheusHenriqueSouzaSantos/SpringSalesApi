@@ -6,8 +6,8 @@ spring:
     enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/projeto_api_de_vendas_em_spring?options=-c%20TimeZone=UTC
-    username: postgres
-    password: postgres
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -19,3 +19,7 @@ spring:
   mvc:
     servlet:
       path: /api
+  jwt:
+    secret-key: ${JWT_KEY}
+    expiration: 1800000
+
