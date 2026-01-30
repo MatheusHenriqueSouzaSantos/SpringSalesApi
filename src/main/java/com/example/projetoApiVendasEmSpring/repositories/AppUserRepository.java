@@ -52,5 +52,6 @@ public interface AppUserRepository extends BaseRepository<AppUser,UUID>{
         where appUser.email = :email
     """)
     public boolean verifyExistenceAppUserByEmail(@Param("email")String email);
+    
 
 }
