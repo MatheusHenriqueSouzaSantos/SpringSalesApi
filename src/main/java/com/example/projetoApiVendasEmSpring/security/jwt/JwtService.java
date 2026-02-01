@@ -16,7 +16,7 @@ import java.util.Date;
 @Service
 public class JwtService {
     @Value("${jwt.expiration}")
-    private long expirationTimeMiliSeg;
+    private long expirationTimeMilliSeg;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -35,7 +35,7 @@ public class JwtService {
                 .setSubject(userDetails.getEmail())
                 .claim("roles", userDetails.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+expirationTimeMiliSeg))
+                .setExpiration(new Date(System.currentTimeMillis()+ expirationTimeMilliSeg))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

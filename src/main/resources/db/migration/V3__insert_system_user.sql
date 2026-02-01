@@ -4,7 +4,7 @@ INSERT INTO app_user(
                      updated_at,
                      created_by_id,
                      updated_by_id,
-                     is_active,
+                     active,
                      full_name,
                      email,
                      password_hash,

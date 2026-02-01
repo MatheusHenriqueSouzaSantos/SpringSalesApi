@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface BaseRepository<T,P> extends JpaRepository<T,P> {
      List<T> findByActiveTrue();
 
-     List<T> findAllOrderByActiveDesc();
+     List<T> findAllByOrderByActiveDesc();
 
      Optional<T> findByIdAndActiveTrue(P id);
 

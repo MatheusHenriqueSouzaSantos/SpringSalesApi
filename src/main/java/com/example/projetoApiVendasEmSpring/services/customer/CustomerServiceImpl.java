@@ -59,8 +59,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional(readOnly = true)
     @Override
     public List<CustomerOutPutDto> findAll() {
-       List<IndividualCustomer> individualCustomers=individualCustomerRepository.findAllOrderByActiveDesc();
-       List<CorporateCustomer> corporateCustomers=corporateCustomerRepository.findAllOrderByActiveDesc();
+       List<IndividualCustomer> individualCustomers=individualCustomerRepository.findAllByOrderByActiveDesc();
+       List<CorporateCustomer> corporateCustomers=corporateCustomerRepository.findAllByOrderByActiveDesc();
 
        List<CustomerOutPutDto> customersDto=new ArrayList<>();
 

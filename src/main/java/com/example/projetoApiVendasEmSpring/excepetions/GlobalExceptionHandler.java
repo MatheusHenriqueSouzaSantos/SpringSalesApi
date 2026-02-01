@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiErrorDto> handleBusiness(BusinessException ex){
-        return ResponseEntity.status(ex.getStatus()).body(new ApiErrorDto(ex.getStatus(),ex.getMessage()));
+        return ResponseEntity.status(ex.getStatus()).body(new ApiErrorDto(ex.getStatus().value(),ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -24,17 +24,17 @@ public class GlobalExceptionHandler {
                 .toList()
                 .toString();
 
-        return ResponseEntity.badRequest().body(new ApiErrorDto(HttpStatus.BAD_REQUEST,message));
+        return ResponseEntity.badRequest().body(new ApiErrorDto(HttpStatus.BAD_REQUEST.value(),message));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorDto> handleTypeMissMatch(MethodArgumentTypeMismatchException ex){
         String message= "one or more arguments are invalid";
-        return ResponseEntity.badRequest().body(new ApiErrorDto(HttpStatus.BAD_REQUEST,message));
+        return ResponseEntity.badRequest().body(new ApiErrorDto(HttpStatus.BAD_REQUEST.value(),message));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorDto> handleException(Exception ex){
-        return ResponseEntity.internalServerError().body(new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR,"Unexpected Error"));
+        return ResponseEntity.internalServerError().body(new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Unexpected Error"));
     }
 }

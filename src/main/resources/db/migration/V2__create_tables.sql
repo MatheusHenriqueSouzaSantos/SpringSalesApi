@@ -13,24 +13,6 @@ create table app_user(
                          CONSTRAINT fk_app_user_updated_by_id FOREIGN KEY(updated_by_id) REFERENCES app_user(id) ON DELETE restrict
 );
 
-create table address(
-                       id uuid primary key,
-                       created_at timestamptz not null,
-                       updated_at timestamptz,
-                       created_by_id uuid not null,
-                       updated_by_id uuid,
-                       active boolean not null,
-                       street varchar(150) not null,
-                       street_number varchar(20) not null,
-                       neighborhood varchar(150) not null,
-                       state_code varchar(2) not null,
-                       city varchar(100) not null,
-                       customer_id uuid not null,
-
-                       CONSTRAINT fk_address_created_by_id FOREIGN KEY(created_by_id) REFERENCES app_user(id) ON DELETE restrict,
-                       CONSTRAINT fk_address_updated_by_id FOREIGN KEY(updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
-                       CONSTRAINT fk_address_customer_id FOREIGN KEY(customer_id) REFERENCES customer(id) ON DELETE restrict
-);
 
 create table customer(
                          id uuid primary key,
@@ -43,7 +25,7 @@ create table customer(
                          phone varchar(25) not null,
 
                          CONSTRAINT fk_customer_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
-                         CONSTRAINT fk_customer_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
+                         CONSTRAINT fk_customer_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict
 );
 
 create table corporate_customer(
@@ -62,6 +44,25 @@ create table individual_customer(
                                     cpf varchar(11) not null,
 
                                     CONSTRAINT fk_individual_customer_id FOREIGN KEY (id) REFERENCES customer(id) ON DELETE restrict
+);
+
+create table address(
+                       id uuid primary key,
+                       created_at timestamptz not null,
+                       updated_at timestamptz,
+                       created_by_id uuid not null,
+                       updated_by_id uuid,
+                       active boolean not null,
+                       street varchar(150) not null,
+                       street_number varchar(20) not null,
+                       neighborhood varchar(150) not null,
+                       state_code varchar(2) not null,
+                       city varchar(100) not null,
+                       customer_id uuid not null,
+
+                       CONSTRAINT fk_address_created_by_id FOREIGN KEY(created_by_id) REFERENCES app_user(id) ON DELETE restrict,
+                       CONSTRAINT fk_address_updated_by_id FOREIGN KEY(updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
+                       CONSTRAINT fk_address_customer_id FOREIGN KEY(customer_id) REFERENCES customer(id) ON DELETE restrict
 );
 
 create table product(

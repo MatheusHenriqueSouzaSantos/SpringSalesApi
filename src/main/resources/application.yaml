@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: projetoApiDeVendasEmSpring
@@ -7,22 +6,23 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/projeto_api_de_vendas_em_spring?options=-c%20TimeZone=UTC
     username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
-        jdbc :
+        jdbc:
           time_zone : UTC
   mvc:
     servlet:
       path: /api
-  jwt:
-    secret-key: ${JWT_KEY}
-    expiration: 1800000
+jwt:
+  secret-key: ${JWT_KEY}
+  expiration: 1800000
 
-  admin-user:
-    password: {$ADMIN_PASSWORD}
+admin-user:
+  password: ${ADMIN_PASSWORD}
+  email: ${ADMIN_EMAIL}
 

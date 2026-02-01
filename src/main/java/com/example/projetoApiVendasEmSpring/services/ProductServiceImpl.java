@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductOutputDto> findAllProduct() {
-        List<Product> products=repository.findAllOrderByActiveDesc();
+        List<Product> products=repository.findAllByOrderByActiveDesc();
         return products.stream().map(this::entityToDto).toList();
 
     }
