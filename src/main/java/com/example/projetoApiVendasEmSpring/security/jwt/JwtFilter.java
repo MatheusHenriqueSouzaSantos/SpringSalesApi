@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -56,9 +57,9 @@ public class JwtFilter extends OncePerRequestFilter {
         Authentication authentication;
         try{
             UserDetailsImpl userDetails=(UserDetailsImpl) userDetailsService.loadUserByUsername(claims.getSubject());
-            List<String> roles=(List<String>) claims.get("roles", List.class);
-            List<SimpleGrantedAuthority> authorities=roles.stream().map((i)->new SimpleGrantedAuthority(i.toString()))
-                    .toList();
+            List<Map<String,Object>> roles=(List<Map<String,Object>>) claims.get("roles", List.class);
+            List<SimpleGrantedAuthority> authorities=roles.stream().map((i)->new SimpleGrantedAuthority(i.toString())).toList();
+
             authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -68,7 +69,8 @@ public class JwtFilter extends OncePerRequestFilter {
         catch (Exception ex){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\" : \"The token in Incorrectly formatted\"");
+            response.getWriter().write("{\"error\" : \"The token in Incorrectly formatted\"}");
+            System.out.println(ex.getMessage());
             return;
         }
 
