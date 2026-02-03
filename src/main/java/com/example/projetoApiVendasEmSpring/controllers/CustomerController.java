@@ -44,22 +44,22 @@ public class CustomerController {
         return ResponseEntity.ok(service.findActiveCustomerById(id));
     }
 
-    @GetMapping("/find-by-cpf{cpf}")
+    @GetMapping("/find-by-cpf/{cpf}")
     public ResponseEntity<IndividualCustomerOutputDto> findCustomerByCpf(@PathVariable String cpf){
         return ResponseEntity.ok(service.findCustomerByCpf(cpf));
     }
 
-    @GetMapping("/active/find-by-cpf{cpf}")
+    @GetMapping("/active/find-by-cpf/{cpf}")
     public ResponseEntity<IndividualCustomerOutputDto> findActiveCustomerByCpf(@PathVariable String cpf){
         return ResponseEntity.ok(service.findActiveCustomerByCpf(cpf));
     }
 
-    @GetMapping("/find-by-cnpj{cnpj}")
+    @GetMapping("/find-by-cnpj/{cnpj}")
     public ResponseEntity<CorporateCustomerOutputDto> findCustomerByCnpj(@PathVariable String cnpj){
         return ResponseEntity.ok(service.findCustomerByCnpj(cnpj));
     }
 
-    @GetMapping("/active/find-by-cnpj{cnpj}")
+    @GetMapping("/active/find-by-cnpj/{cnpj}")
     public ResponseEntity<CorporateCustomerOutputDto> findActiveCustomerByCnpj(@PathVariable String cnpj){
         return ResponseEntity.ok(service.findActiveCustomerByCnpj(cnpj));
     }

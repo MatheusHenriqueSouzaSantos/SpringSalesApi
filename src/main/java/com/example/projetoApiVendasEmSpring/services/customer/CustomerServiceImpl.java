@@ -19,6 +19,7 @@ import com.example.projetoApiVendasEmSpring.repositories.CorporateCustomerReposi
 import com.example.projetoApiVendasEmSpring.repositories.IndividualCustomerRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.services.validation.DocumentValidation;
 import com.example.projetoApiVendasEmSpring.services.interfaces.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,12 +42,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final AppUserRepository appUserRepository;
 
-    private final CustomerValidation validation;
+    private final DocumentValidation validation;
 
     private final SecurityUtils util;
 
     public CustomerServiceImpl(IndividualCustomerRepository individualCustomerRepository, CorporateCustomerRepository corporateCustomerRepository,
-                               AddressRepository addressRepository, AppUserRepository appUserRepository, CustomerValidation validation,
+                               AddressRepository addressRepository, AppUserRepository appUserRepository, DocumentValidation validation,
                                SecurityUtils util) {
         this.individualCustomerRepository = individualCustomerRepository;
         this.corporateCustomerRepository = corporateCustomerRepository;

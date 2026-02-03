@@ -1,9 +1,9 @@
-package com.example.projetoApiVendasEmSpring.services.customer;
+package com.example.projetoApiVendasEmSpring.services.validation;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomerValidation {
+public class DocumentValidation {
 
     public boolean validateCpf(String cpf){
         if (cpf==null){
