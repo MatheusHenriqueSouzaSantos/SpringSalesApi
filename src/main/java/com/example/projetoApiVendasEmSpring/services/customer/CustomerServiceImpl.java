@@ -1,9 +1,9 @@
 package com.example.projetoApiVendasEmSpring.services.customer;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
-import com.example.projetoApiVendasEmSpring.dtos.customer.CorporateCustomerOutputDto;
-import com.example.projetoApiVendasEmSpring.dtos.customer.CustomerOutPutDto;
-import com.example.projetoApiVendasEmSpring.dtos.customer.IndividualCustomerOutputDto;
+import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.CorporateCustomerOutputDto;
+import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.CustomerOutPutDto;
+import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.IndividualCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.address.AddressInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.address.AddressOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.corporateCustomer.CorporateCustomerCreateDto;

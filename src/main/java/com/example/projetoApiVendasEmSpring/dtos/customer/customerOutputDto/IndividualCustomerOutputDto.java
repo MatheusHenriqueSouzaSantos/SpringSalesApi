@@ -1,6 +1,7 @@
-package com.example.projetoApiVendasEmSpring.dtos.customer;
+package com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.customer.CustomerType;
 import com.example.projetoApiVendasEmSpring.dtos.customer.address.AddressOutputDto;
 import lombok.Getter;
 

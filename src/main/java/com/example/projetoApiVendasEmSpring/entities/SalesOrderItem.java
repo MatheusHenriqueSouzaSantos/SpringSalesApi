@@ -29,17 +29,17 @@ public class SalesOrderItem extends BaseEntity {
     @Column(name = "unit_price",nullable = false,updatable = false,precision = 15,scale = 2)
     private BigDecimal unitPrice;
     @Setter
-    @Column(name = "unit_discount_amount",nullable = false,precision = 15,scale = 2)
-    private BigDecimal unitDiscountAmount;
+    @Column(name = "discount_amount",nullable = false,precision = 15,scale = 2)
+    private BigDecimal discountAmount;
 
 
-    public SalesOrderItem(AppUser createdBy, SalesOrder salesOrder, Product product, int quantity, BigDecimal unitPrice, BigDecimal unitDiscountAmount) {
+    public SalesOrderItem(AppUser createdBy, SalesOrder salesOrder, Product product, int quantity, BigDecimal unitPrice, BigDecimal discountAmount) {
         super(createdBy);
         this.salesOrder = salesOrder;
         this.product = product;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.unitDiscountAmount = unitDiscountAmount;
+        this.discountAmount = discountAmount;
     }
 
 

@@ -6,7 +6,7 @@ create table app_user(
                          updated_by_id uuid,
                          active boolean not null,
                          full_name varchar(150) not null,
-                         email varchar(200) not null,
+                         email varchar(200) not null unique,
                          password_hash varchar(100) not null,
                          user_role varchar(30) not null,
                          CONSTRAINT fk_app_user_created_by_id FOREIGN KEY(created_by_id) REFERENCES app_user(id) ON DELETE restrict DEFERRABLE INITIALLY DEFERRED,
@@ -21,7 +21,7 @@ create table customer(
                          created_by_id uuid not null,
                          updated_by_id uuid,
                          active boolean not null,
-                         email varchar(200) not null,
+                         email varchar(200) not null unique,
                          phone varchar(25) not null,
 
                          CONSTRAINT fk_customer_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
@@ -33,7 +33,7 @@ create table corporate_customer(
                                    legal_name varchar(150) not null,
                                    trade_name varchar(70),
                                    state_registration varchar(15),
-                                   cnpj varchar(14) not null,
+                                   cnpj varchar(14) not null unique,
 
                                    CONSTRAINT fk_corporate_customer_id FOREIGN KEY (id) REFERENCES customer(id) ON DELETE restrict
 );
@@ -41,7 +41,7 @@ create table corporate_customer(
 create table individual_customer(
                                     id uuid primary key,
                                     full_name varchar(150) not null,
-                                    cpf varchar(11) not null,
+                                    cpf varchar(11) not null unique,
 
                                     CONSTRAINT fk_individual_customer_id FOREIGN KEY (id) REFERENCES customer(id) ON DELETE restrict
 );
@@ -72,7 +72,7 @@ create table product(
                         created_by_id uuid not null,
                         updated_by_id uuid,
                         active boolean not null,
-                        sku varchar(85) not null,
+                        sku varchar(85) not null unique,
                         name varchar(150) not null,
                         description varchar(300),
                         price decimal(15,2) not null,
@@ -104,8 +104,8 @@ create table seller(
                        updated_by_id uuid,
                        active boolean not null,
                        full_name varchar(150) not null,
-                       cpf varchar(11) not null,
-                       email varchar(200) not null,
+                       cpf varchar(11) not null unique,
+                       email varchar(200) not null unique,
                        phone varchar(25) not null,
 
                        CONSTRAINT fk_seller_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
@@ -125,6 +125,7 @@ create table sales_order(
                             subtotal_amount decimal(15,2) not null,
                             order_discount_amount decimal(15,2) not null,
                             total_amount decimal(15,2) not null,
+                            status varchar(30) not null
 
                             CONSTRAINT fk_sales_order_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                             CONSTRAINT fk_sales_order_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
@@ -140,15 +141,15 @@ create table sales_order_item(
                                  updated_by_id uuid,
                                  active boolean not null,
                                  sales_order_id uuid not null,
-                                 PRODUCT_ID uuid not null,
-                                 QUANTITY int not null,
-                                 UNIT_PRICE decimal(15,2) not null,
-                                 UNIT_DISCOUNT_AMOUNT decimal(15,2) not null,
+                                 product_id uuid not null,
+                                 quantity int not null,
+                                 unit_price decimal(15,2) not null,
+                                 discount_amount decimal(15,2) not null,
 
                                  CONSTRAINT fk_sales_order_item_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                                  CONSTRAINT fk_sales_order_item_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict,
                                  CONSTRAINT fk_sales_order_item_sales_order_id FOREIGN KEY (sales_order_id) REFERENCES sales_order(id) ON DELETE restrict,
-                                 CONSTRAINT fk_sales_order_item_product_id FOREIGN KEY (PRODUCT_ID) REFERENCES product(id) ON DELETE restrict
+                                 CONSTRAINT fk_sales_order_item_product_id FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE restrict
 );
 
 create table financial_transaction(

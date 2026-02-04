@@ -1,5 +1,6 @@
 package com.example.projetoApiVendasEmSpring.entities;
 
+import com.example.projetoApiVendasEmSpring.entities.enums.SalesOrderStatus;
 import com.example.projetoApiVendasEmSpring.services.Utils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.List;
 public class SalesOrder extends BaseEntity {
     @Column(name = "order_code",nullable = false,updatable = false,unique = true,length = 6)
     private String orderCode;
-    //deixar alterar ids de fks?
+    //can alter ids of fks?
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id",nullable = false)
@@ -35,19 +36,27 @@ public class SalesOrder extends BaseEntity {
     @Setter
     @OneToMany(mappedBy = "salesOrder")
     private List<SalesOrderItem> salesOrderItems;
-
+    @Setter
     @OneToOne(mappedBy = "salesOrder",fetch = FetchType.LAZY)
     private FinancialTransaction transaction;
 
-    public SalesOrder(AppUser createdBy, String orderCode, Customer customer, Seller seller, BigDecimal subtotalAmount, BigDecimal orderDiscountAmount, BigDecimal totalAmount, List<SalesOrderItem> salesOrderItems) {
+    @Setter
+    @Column(name = "status",nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private SalesOrderStatus status;
+
+
+    public SalesOrder(AppUser createdBy, Customer customer, Seller seller, BigDecimal subtotalAmount, BigDecimal orderDiscountAmount,
+                      BigDecimal totalAmount, List<SalesOrderItem> salesOrderItems, FinancialTransaction transaction, SalesOrderStatus status) {
         super(createdBy);
-        this.orderCode = orderCode;
         this.customer = customer;
         this.seller = seller;
         this.subtotalAmount = subtotalAmount;
         this.orderDiscountAmount = orderDiscountAmount;
         this.totalAmount = totalAmount;
         this.salesOrderItems = salesOrderItems;
+        this.transaction = transaction;
+        this.status = status;
     }
 
     @Override

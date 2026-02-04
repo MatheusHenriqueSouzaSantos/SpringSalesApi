@@ -32,6 +32,7 @@ public class FinancialTransaction extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FinancialPaymentTerm paymentTerm;
 
+    @Setter
     @OneToMany(mappedBy = "financialTransaction",fetch = FetchType.LAZY)
     private List<Installment> installment;
 
