@@ -13,10 +13,7 @@ import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.Ind
 import com.example.projetoApiVendasEmSpring.entities.*;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
-import com.example.projetoApiVendasEmSpring.repositories.AddressRepository;
-import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
-import com.example.projetoApiVendasEmSpring.repositories.CorporateCustomerRepository;
-import com.example.projetoApiVendasEmSpring.repositories.IndividualCustomerRepository;
+import com.example.projetoApiVendasEmSpring.repositories.*;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.validation.DocumentValidation;
@@ -34,6 +31,8 @@ import java.util.UUID;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+    private final CustomerRepository customerRepository;
+
     private final IndividualCustomerRepository individualCustomerRepository;
 
     private final CorporateCustomerRepository corporateCustomerRepository;
@@ -44,38 +43,38 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final DocumentValidation validation;
 
-    private final SecurityUtils util;
-
-    public CustomerServiceImpl(IndividualCustomerRepository individualCustomerRepository, CorporateCustomerRepository corporateCustomerRepository,
-                               AddressRepository addressRepository, AppUserRepository appUserRepository, DocumentValidation validation,
-                               SecurityUtils util) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, IndividualCustomerRepository individualCustomerRepository,
+                               CorporateCustomerRepository corporateCustomerRepository, AddressRepository addressRepository,
+                               AppUserRepository appUserRepository, DocumentValidation validation) {
+        this.customerRepository = customerRepository;
         this.individualCustomerRepository = individualCustomerRepository;
         this.corporateCustomerRepository = corporateCustomerRepository;
         this.addressRepository = addressRepository;
         this.appUserRepository = appUserRepository;
         this.validation = validation;
-        this.util = util;
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<CustomerOutPutDto> findAll() {
-       List<IndividualCustomer> individualCustomers=individualCustomerRepository.findAllByOrderByActiveDesc();
-       List<CorporateCustomer> corporateCustomers=corporateCustomerRepository.findAllByOrderByActiveDesc();
+        List<Customer> customers=customerRepository.findAllByOrderByActiveDesc();
+        List<CustomerOutPutDto> customersDto=new ArrayList<>();
 
-       List<CustomerOutPutDto> customersDto=new ArrayList<>();
-
-       customersDto.addAll(individualCustomers.stream().map(this::entityToIndividualCustomerDto).toList());
-       customersDto.addAll(corporateCustomers.stream().map(this::entityToCorporateCustomerDto).toList());
-
-       return customersDto;
-
+        for (Customer customer: customers){
+            if(customer instanceof IndividualCustomer){
+                customersDto.add(entityToIndividualCustomerDto((IndividualCustomer) customer));
+                continue;
+            }
+            customersDto.add(entityToCorporateCustomerDto((CorporateCustomer) customer));
+        }
+        return customersDto;
     }
 
     @Transactional(readOnly = true)
     @Override
     public CustomerOutPutDto findCustomerById(UUID id) {
-        Customer customer= getIndividualOrCorporateCustomerByIdOrThrow(id);
+        Customer customer= customerRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
         if(customer instanceof IndividualCustomer){
             return entityToIndividualCustomerDto((IndividualCustomer) customer);
         }
@@ -84,7 +83,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerOutPutDto findActiveCustomerById(UUID id) {
-        Customer customer= getActiveIndividualOrCorprateCustomerByIdOrThrow(id);
+        Customer customer= customerRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
         if(customer instanceof IndividualCustomer){
             return entityToIndividualCustomerDto((IndividualCustomer) customer);
         }
@@ -320,18 +320,6 @@ public class CustomerServiceImpl implements CustomerService {
             return individualCustomer.get();
         }
         Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findById(id);
-        if(corporateCustomer.isPresent()){
-            return corporateCustomer.get();
-        }
-        throw new ResourceNotFoundException("Customer not found");
-    }
-
-    private Customer getActiveIndividualOrCorprateCustomerByIdOrThrow(UUID id){
-        Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findByIdAndActiveTrue(id);
-        if(individualCustomer.isPresent()){
-            return individualCustomer.get();
-        }
-        Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findByIdAndActiveTrue(id);
         if(corporateCustomer.isPresent()){
             return corporateCustomer.get();
         }

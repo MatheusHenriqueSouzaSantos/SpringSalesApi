@@ -23,7 +23,7 @@ create table customer(
                          active boolean not null,
                          email varchar(200) not null unique,
                          phone varchar(25) not null,
-
+                         customer_type varchar(25) not null,
                          CONSTRAINT fk_customer_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                          CONSTRAINT fk_customer_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict
 );

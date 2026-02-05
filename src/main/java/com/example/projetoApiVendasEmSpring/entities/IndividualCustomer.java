@@ -1,9 +1,6 @@
 package com.example.projetoApiVendasEmSpring.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -11,6 +8,7 @@ import lombok.*;
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorValue("INDIVIDUAL_CUSTOMER")
 public class IndividualCustomer extends Customer {
     @Setter
     @Column(name = "full_name", nullable = false, length = 150)

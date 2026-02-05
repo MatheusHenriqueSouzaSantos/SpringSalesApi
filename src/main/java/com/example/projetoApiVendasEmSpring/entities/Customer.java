@@ -9,6 +9,7 @@ import lombok.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorColumn(name = "customer_type")
 public abstract class Customer extends BaseEntity {
     @Column(name = "email", nullable = false)
     @Setter
