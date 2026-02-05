@@ -107,7 +107,6 @@ create table seller(
                        cpf varchar(11) not null unique,
                        email varchar(200) not null unique,
                        phone varchar(25) not null,
-
                        CONSTRAINT fk_seller_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                        CONSTRAINT fk_seller_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict
 );
@@ -125,7 +124,7 @@ create table sales_order(
                             subtotal_amount decimal(15,2) not null,
                             order_discount_amount decimal(15,2) not null,
                             total_amount decimal(15,2) not null,
-                            status varchar(30) not null
+                            status varchar(30) not null,
 
                             CONSTRAINT fk_sales_order_created_by_id FOREIGN KEY (created_by_id) REFERENCES app_user(id) ON DELETE restrict,
                             CONSTRAINT fk_sales_order_updated_by_id FOREIGN KEY (updated_by_id) REFERENCES app_user(id) ON DELETE restrict,

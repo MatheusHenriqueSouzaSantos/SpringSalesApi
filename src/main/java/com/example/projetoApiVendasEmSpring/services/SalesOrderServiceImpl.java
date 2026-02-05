@@ -54,7 +54,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     public SalesOrderOutputDto getByOrderCode(String orderCode) {
         if(orderCode.length()!=6){
-            throw new BusinessException(HttpStatus.BAD_REQUEST,"Order code in invalid format")
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Order code in invalid format");
         }
         SalesOrder salesOrder=salesOrderRepository.findByOrderCode(orderCode)
                 .orElseThrow(()->new ResourceNotFoundException("Sales Order not found"));

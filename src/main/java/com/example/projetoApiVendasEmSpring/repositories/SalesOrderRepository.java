@@ -10,9 +10,9 @@ import java.util.UUID;
 public interface SalesOrderRepository extends BaseRepository<SalesOrder, UUID> {
     @Query("""
         SELECT s
-        FROM SalesOrder o
+        FROM SalesOrder s
         ORDER BY 
-                CASE o.status
+                CASE s.status
                         WHEN 'OPEN' THEN 1
                         WHEN 'IN_PROGRESS' THEN 2
                         WHEN 'PAID' THEN 3
