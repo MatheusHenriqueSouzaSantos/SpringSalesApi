@@ -1,5 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.salesOrder;
 
+import com.example.projetoApiVendasEmSpring.dtos.customer.simplifyCustomerOutputDto.SimplifyCustomerInput;
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderIteInputDto;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record SalesOrderInputDto(
-        UUID customerId,
+        SimplifyCustomerInput customer,
         UUID sellerId,
         List<SalesOrderIteInputDto> salesOrderItems,
         BigDecimal orderDiscountAmount,

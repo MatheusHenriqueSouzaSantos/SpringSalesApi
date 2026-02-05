@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.services;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductUpdateDto;
@@ -164,8 +164,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     private ProductOutputDto entityToDto(Product product){
-        AppUserAuditDto createdBy= AppUserAuditDto.appUserToAuditAppUserDto(product.getCreatedBy());
-        AppUserAuditDto updatedBy= AppUserAuditDto.appUserToAuditAppUserDto(product.getUpdatedBy());
+        AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(product.getCreatedBy());
+        AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(product.getUpdatedBy());
         Stock stock=product.getStock();
         SummaryStockDto stockDto=new SummaryStockDto(stock.getId(), stock.getQuantity());
         return new ProductOutputDto(

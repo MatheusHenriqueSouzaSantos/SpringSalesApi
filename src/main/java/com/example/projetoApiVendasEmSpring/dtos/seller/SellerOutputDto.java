@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.seller;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -8,9 +8,9 @@ import java.util.UUID;
 public record SellerOutputDto(
         UUID id,
         Instant createdAt,
-        AppUserAuditDto createdBy,
+        AuditAppUserDto createdBy,
         Instant updatedAt,
-        AppUserAuditDto updatedBy,
+        AuditAppUserDto updatedBy,
         boolean active,
         String fullName,
         String cpf,

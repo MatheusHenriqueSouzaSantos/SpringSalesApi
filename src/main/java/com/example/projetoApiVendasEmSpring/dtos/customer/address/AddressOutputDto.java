@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.customer.address;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.entities.Address;
 
 import java.time.Instant;
@@ -9,9 +9,9 @@ import java.util.UUID;
 public record AddressOutputDto(
         UUID id,
         Instant createdAt,
-        AppUserAuditDto createdBy,
+        AuditAppUserDto createdBy,
         Instant updatedAt,
-        AppUserAuditDto updatedBy,
+        AuditAppUserDto updatedBy,
         boolean active,
         String street,
         String streetNumber,
@@ -21,8 +21,8 @@ public record AddressOutputDto(
 
 ) {
     public static AddressOutputDto addressEntityToAddressDto(Address address){
-        AppUserAuditDto createdBy=AppUserAuditDto.appUserToAuditAppUserDto(address.getCreatedBy());
-        AppUserAuditDto updatedBy=AppUserAuditDto.appUserToAuditAppUserDto(address.getUpdatedBy());
+        AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(address.getCreatedBy());
+        AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(address.getUpdatedBy());
         return new AddressOutputDto(address.getId(),address.getCreatedAt(),createdBy,address.getUpdatedAt(),updatedBy,address.isActive(),
                 address.getStreet(), address.getStreetNumber(),address.getNeighborhood(),address.getCity(),address.getStateCode());
     }

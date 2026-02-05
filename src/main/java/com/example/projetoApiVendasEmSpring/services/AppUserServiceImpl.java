@@ -4,7 +4,7 @@ import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.entities.AppUser;
 import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
@@ -118,8 +118,8 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     private AppUserOutputDto entityToDto(AppUser user){
-        AppUserAuditDto createdBy= AppUserAuditDto.appUserToAuditAppUserDto(user.getCreatedBy());
-        AppUserAuditDto updatedBy= AppUserAuditDto.appUserToAuditAppUserDto(user.getUpdatedBy());
+        AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(user.getCreatedBy());
+        AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(user.getUpdatedBy());
 
         return new AppUserOutputDto(
                 user.getId(),

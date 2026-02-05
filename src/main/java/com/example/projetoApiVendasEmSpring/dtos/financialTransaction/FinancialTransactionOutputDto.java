@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.financialTransaction;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
 import com.example.projetoApiVendasEmSpring.entities.enums.FinancialPaymentMethod;
 import com.example.projetoApiVendasEmSpring.entities.enums.FinancialPaymentTerm;
@@ -14,9 +14,9 @@ import java.util.UUID;
 public record FinancialTransactionOutputDto(
           UUID id,
           Instant createdAt,
-          AppUserAuditDto createdBy,
+          AuditAppUserDto createdBy,
           Instant updatedAt,
-          AppUserAuditDto updatedBy,
+          AuditAppUserDto updatedBy,
           boolean active,
           FinancialTransactionStatus status,
           FinancialPaymentMethod paymentMethod,

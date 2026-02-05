@@ -1,8 +1,6 @@
 package com.example.projetoApiVendasEmSpring.services;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
-import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerUpdateDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerUpdateDto;
@@ -23,7 +21,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Service
@@ -144,8 +141,8 @@ public class SellerServiceImpl implements SellerService {
     }
 
     private SellerOutputDto entityToDto(Seller seller){
-        AppUserAuditDto createdBy=AppUserAuditDto.appUserToAuditAppUserDto(seller.getCreatedBy());
-        AppUserAuditDto updatedBy=AppUserAuditDto.appUserToAuditAppUserDto(seller.getUpdatedBy());
+        AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(seller.getCreatedBy());
+        AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(seller.getUpdatedBy());
 
         return new SellerOutputDto(seller.getId(),seller.getCreatedAt(),createdBy,seller.getUpdatedAt(),updatedBy,seller.isActive(),
                 seller.getFullName(),seller.getCpf(),seller.getEmail(), seller.getPhone());

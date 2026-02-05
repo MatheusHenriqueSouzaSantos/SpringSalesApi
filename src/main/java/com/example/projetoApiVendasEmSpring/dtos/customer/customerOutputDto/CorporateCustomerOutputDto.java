@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.CustomerType;
 import com.example.projetoApiVendasEmSpring.dtos.customer.address.AddressOutputDto;
 import lombok.Getter;
@@ -13,9 +13,9 @@ public final class CorporateCustomerOutputDto implements CustomerOutPutDto {
     private final CustomerType type=CustomerType.CORPORATE_CUSTOMER;
     private final UUID id;
     private final Instant createdAt;
-    private final AppUserAuditDto createdBy;
+    private final AuditAppUserDto createdBy;
     private final Instant updatedAt;
-    private final AppUserAuditDto updatedBy;
+    private final AuditAppUserDto updatedBy;
     private final boolean active;
     private final String email;
     private final String phone;
@@ -25,8 +25,8 @@ public final class CorporateCustomerOutputDto implements CustomerOutPutDto {
     private final String stateRegistration;
     private final String cnpj;
 
-    public CorporateCustomerOutputDto(UUID id, Instant createdAt, AppUserAuditDto createdBy, Instant updatedAt,
-                                      AppUserAuditDto updatedBy, boolean active, String email, String phone, AddressOutputDto address,
+    public CorporateCustomerOutputDto(UUID id, Instant createdAt, AuditAppUserDto createdBy, Instant updatedAt,
+                                      AuditAppUserDto updatedBy, boolean active, String email, String phone, AddressOutputDto address,
                                       String legalName, String tradeName, String stateRegistration, String cnpj) {
         this.id = id;
         this.createdAt = createdAt;

@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.salesOrder;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.simplifyCustomerOutputDto.SimplifyCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemOutputDto;
@@ -15,9 +15,9 @@ import java.util.UUID;
 public record SalesOrderOutputDto(
         UUID id,
         Instant createdAt,
-        AppUserAuditDto createdBy,
+        AuditAppUserDto createdBy,
         Instant updatedAt,
-        AppUserAuditDto updatedBy,
+        AuditAppUserDto updatedBy,
         boolean active,
         String orderCode,
         SalesOrderStatus status,

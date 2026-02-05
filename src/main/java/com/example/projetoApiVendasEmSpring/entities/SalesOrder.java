@@ -37,8 +37,8 @@ public class SalesOrder extends BaseEntity {
     @OneToMany(mappedBy = "salesOrder")
     private List<SalesOrderItem> salesOrderItems;
     @Setter
-    @OneToOne(mappedBy = "salesOrder",fetch = FetchType.LAZY)
-    private FinancialTransaction transaction;
+    @OneToOne(mappedBy = "salesOrder")
+    private FinancialTransaction financialTransaction;
 
     @Setter
     @Column(name = "status",nullable = false)
@@ -47,7 +47,7 @@ public class SalesOrder extends BaseEntity {
 
 
     public SalesOrder(AppUser createdBy, Customer customer, Seller seller, BigDecimal subtotalAmount, BigDecimal orderDiscountAmount,
-                      BigDecimal totalAmount, List<SalesOrderItem> salesOrderItems, FinancialTransaction transaction, SalesOrderStatus status) {
+                      BigDecimal totalAmount, List<SalesOrderItem> salesOrderItems, FinancialTransaction financialTransaction, SalesOrderStatus status) {
         super(createdBy);
         this.customer = customer;
         this.seller = seller;
@@ -55,7 +55,7 @@ public class SalesOrder extends BaseEntity {
         this.orderDiscountAmount = orderDiscountAmount;
         this.totalAmount = totalAmount;
         this.salesOrderItems = salesOrderItems;
-        this.transaction = transaction;
+        this.financialTransaction = financialTransaction;
         this.status = status;
     }
 

@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.services.customer;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.CorporateCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.CustomerOutPutDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.IndividualCustomerOutputDto;
@@ -284,8 +284,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private IndividualCustomerOutputDto entityToIndividualCustomerDto(IndividualCustomer customer){
-        AppUserAuditDto createdBy=AppUserAuditDto.appUserToAuditAppUserDto(customer.getCreatedBy());
-        AppUserAuditDto updatedBy=AppUserAuditDto.appUserToAuditAppUserDto(customer.getUpdatedBy());
+        AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(customer.getCreatedBy());
+        AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(customer.getUpdatedBy());
 
         AddressOutputDto addressDto=AddressOutputDto.addressEntityToAddressDto(customer.getAddress());
 
@@ -294,8 +294,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private CorporateCustomerOutputDto entityToCorporateCustomerDto(CorporateCustomer customer){
-        AppUserAuditDto createdBy=AppUserAuditDto.appUserToAuditAppUserDto(customer.getCreatedBy());
-        AppUserAuditDto updatedBy=AppUserAuditDto.appUserToAuditAppUserDto(customer.getUpdatedBy());
+        AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(customer.getCreatedBy());
+        AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(customer.getUpdatedBy());
 
         AddressOutputDto addressDto=AddressOutputDto.addressEntityToAddressDto(customer.getAddress());
 

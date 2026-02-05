@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.installment;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserAuditDto;
+import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,9 +10,9 @@ import java.util.UUID;
 public record InstallmentOutputDto(
         UUID id,
         Instant createdAt,
-        AppUserAuditDto createdBy,
+        AuditAppUserDto createdBy,
         Instant updatedAt,
-        AppUserAuditDto updatedBy,
+        AuditAppUserDto updatedBy,
         boolean active,
         BigDecimal installmentAmount,
         LocalDate dueDate,
