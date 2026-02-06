@@ -189,15 +189,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private AppUser getAppUserOrThrow(UserDetailsImpl userDetails){
-        return appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,userDetails.getId())
+        return appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,userDetails.getId())
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
     }
 
-    private Product getActiveProductByIdOrThrow(UUID id){
-        return repository.findByIdAndActiveTrue(id)
-                .orElseThrow(()->new ResourceNotFoundException("Product not found"));
-    }
 
     private Product getProductByIdOrThrow(UUID id){
         return repository.findById(id)

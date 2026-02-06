@@ -13,4 +13,5 @@ public interface SalesOrderService {
     SalesOrderOutputDto getByOrderCode(String orderCode);
     SalesOrderOutputDto create(SalesOrderInputDto dto, UserDetailsImpl loggedUser);
     SalesOrderOutputDto update(UUID id, SalesOrderInputDto dto, UserDetailsImpl loggedUser);
+    void cancelSalesOrder(UUID id, UserDetailsImpl loggedUser);
 }

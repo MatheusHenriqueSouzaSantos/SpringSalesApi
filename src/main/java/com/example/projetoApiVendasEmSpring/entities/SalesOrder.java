@@ -43,25 +43,18 @@ public class SalesOrder extends BaseEntity {
     @Setter
     @Column(name = "status",nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private SalesOrderStatus status;
+    private SalesOrderStatus status=SalesOrderStatus.CREATED;
 
 
-    public SalesOrder(AppUser createdBy, Customer customer, Seller seller, BigDecimal subtotalAmount, BigDecimal orderDiscountAmount,
-                      BigDecimal totalAmount, List<SalesOrderItem> salesOrderItems, FinancialTransaction financialTransaction, SalesOrderStatus status) {
+    public SalesOrder(AppUser createdBy, Customer customer, Seller seller) {
         super(createdBy);
+        this.orderCode=Utils.GenerateOrderCode();
         this.customer = customer;
         this.seller = seller;
-        this.subtotalAmount = subtotalAmount;
-        this.orderDiscountAmount = orderDiscountAmount;
-        this.totalAmount = totalAmount;
-        this.salesOrderItems = salesOrderItems;
-        this.financialTransaction = financialTransaction;
-        this.status = status;
     }
 
     @Override
     protected void onPrePersist(){
         super.onPrePersist();
-        this.orderCode= Utils.GenerateOrderCode();
     }
 }

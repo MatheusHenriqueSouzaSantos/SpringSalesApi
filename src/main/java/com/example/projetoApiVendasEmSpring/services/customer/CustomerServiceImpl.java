@@ -14,7 +14,6 @@ import com.example.projetoApiVendasEmSpring.entities.*;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.repositories.*;
-import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.validation.DocumentValidation;
 import com.example.projetoApiVendasEmSpring.services.interfaces.CustomerService;
@@ -147,7 +146,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(individualCustomerRepository.existsByEmail(dto.email()) || corporateCustomerRepository.existsByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        AppUser createBy=getAppUserOrThrow(loggedUser);
+        AppUser createBy= getActieAppUserOrThrow(loggedUser);
         IndividualCustomer customer=new IndividualCustomer(createBy,dto.email(), dto.phone(), dto.fullName(), dto.cpf());
         AddressInputDto addressDto=dto.address();
         Address address=new Address(createBy,addressDto.street(),addressDto.streetNumber(),addressDto.neighborhood(),
@@ -171,7 +170,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(corporateCustomerRepository.existsByEmail(dto.email()) || individualCustomerRepository.existsByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        AppUser createBy=getAppUserOrThrow(loggedUser);
+        AppUser createBy= getActieAppUserOrThrow(loggedUser);
         CorporateCustomer customer=new CorporateCustomer(createBy,dto.email(), dto.phone(),dto.legalName(),dto.tradeName(),dto.stateRegistration(),
                 dto.cnpj());
         AddressInputDto addressDto=dto.address();
@@ -183,7 +182,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         return entityToCorporateCustomerDto(customer);
     }
-
+        //use customer repository???
     @Transactional
     @Override
     public IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
@@ -199,7 +198,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         Address addressUpdate=customerUpdate.getAddress();
-        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
+        AppUser updatedBy=this.getActieAppUserOrThrow(loggedUser);
         addressUpdate.setUpdatedAt(Instant.now());
         addressUpdate.setUpdatedBy(updatedBy);
         addressUpdate.setStreet(dto.address().street());
@@ -233,7 +232,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         Address addressUpdate=customerUpdate.getAddress();
-        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
+        AppUser updatedBy=this.getActieAppUserOrThrow(loggedUser);
         addressUpdate.setUpdatedAt(Instant.now());
         addressUpdate.setUpdatedBy(updatedBy);
         addressUpdate.setStreet(dto.address().street());
@@ -257,28 +256,30 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     @Override
     public void deActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
-        Customer customer = getIndividualOrCorporateCustomerByIdOrThrow(id);
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
         if(!customer.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The customer is already inactive");
         }
 
         customer.setUpdatedAt(Instant.now());
-        AppUser updatedBy=getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getActieAppUserOrThrow(loggedUser);
         customer.setUpdatedBy(updatedBy);
         customer.setActive(false);
     }
     @Transactional
     @Override
     public void reActivateCustomer(UUID id, UserDetailsImpl loggedUser) {
-        Customer customer = getIndividualOrCorporateCustomerByIdOrThrow(id);
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("User not found"));
 
         if(customer.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The customer is already active");
         }
 
         customer.setUpdatedAt(Instant.now());
-        AppUser updatedBy=getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getActieAppUserOrThrow(loggedUser);
         customer.setUpdatedBy(updatedBy);
         customer.setActive(true);
     }
@@ -314,20 +315,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(()->new ResourceNotFoundException("Corporate customer not found"));
     }
 
-    private Customer getIndividualOrCorporateCustomerByIdOrThrow(UUID id){
-        Optional<IndividualCustomer> individualCustomer=individualCustomerRepository.findById(id);
-        if(individualCustomer.isPresent()){
-            return individualCustomer.get();
-        }
-        Optional<CorporateCustomer> corporateCustomer=corporateCustomerRepository.findById(id);
-        if(corporateCustomer.isPresent()){
-            return corporateCustomer.get();
-        }
-        throw new ResourceNotFoundException("Customer not found");
-    }
 
-
-    private AppUser getAppUserOrThrow(UserDetailsImpl loggedUser){
+    private AppUser getActieAppUserOrThrow(UserDetailsImpl loggedUser){
         return appUserRepository.findByIdAndActiveTrue(loggedUser.getId()).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
     }

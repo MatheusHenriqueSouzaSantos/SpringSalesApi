@@ -61,7 +61,7 @@ public class AppUserServiceImpl implements AppUserService {
         if(repository.verifyExistenceAppUserByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a user with this email");
         }
-        AppUser createBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
+        AppUser createBy=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
         String passwordHash=encoder.encode(dto.password());
         AppUser createdUser=new AppUser(createBy,dto.fullName(),dto.email(),passwordHash,dto.role());
         return entityToDto(repository.save(createdUser));
@@ -77,7 +77,7 @@ public class AppUserServiceImpl implements AppUserService {
         if(existingUserWithReceiveEmail.isPresent() && existingUserWithReceiveEmail.get().getId()!= userId){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a user with this email");
         }
-        AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
+        AppUser updatedBy=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
         user.setUpdatedAt(Instant.now());
         user.setUpdatedBy(updatedBy);
         user.setFullName(dto.fullName());
@@ -95,7 +95,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is already inactivated");
         }
 
-        AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
+        AppUser updatedBy=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
 
         user.setUpdatedBy(updatedBy);
         user.setUpdatedAt(Instant.now());
@@ -110,7 +110,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is already active");
         }
 
-        AppUser updatedBy=repository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
+        AppUser updatedBy=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
 
         user.setUpdatedAt(Instant.now());
         user.setUpdatedBy(updatedBy);

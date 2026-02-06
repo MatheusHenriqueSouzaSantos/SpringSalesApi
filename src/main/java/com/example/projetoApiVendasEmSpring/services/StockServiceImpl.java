@@ -2,9 +2,11 @@ package com.example.projetoApiVendasEmSpring.services;
 
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockOutputDto;
+import com.example.projetoApiVendasEmSpring.entities.AppUser;
 import com.example.projetoApiVendasEmSpring.entities.Stock;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
+import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.repositories.StockRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
@@ -20,10 +22,13 @@ public class StockServiceImpl implements StockService {
 
     private final StockRepository repository;
 
+    private final AppUserRepository appUserRepository;
+
     private final SecurityUtils util;
 
-    public StockServiceImpl(StockRepository repository, SecurityUtils util) {
+    public StockServiceImpl(StockRepository repository, AppUserRepository appUserRepository, SecurityUtils util) {
         this.repository = repository;
+        this.appUserRepository = appUserRepository;
         this.util = util;
     }
 
@@ -47,7 +52,9 @@ public class StockServiceImpl implements StockService {
     @Transactional
     public StockOutputDto increaseQuantity(UUID id, StockInputDto dto, UserDetailsImpl loggedUser) {
         Stock stock= getStockByIdAndActiveOrThrow(id);
-
+        AppUser updatedBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
+                        .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        stock.setUpdatedBy(updatedBy);
         stock.setQuantity(stock.getQuantity()+dto.quantity());
 
         return entityToDto(stock);
@@ -61,6 +68,9 @@ public class StockServiceImpl implements StockService {
         if(dto.quantity()>stock.getQuantity()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Insufficient quantity in stock");
         }
+        AppUser updatedBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
+                .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        stock.setUpdatedBy(updatedBy);
 
         stock.setQuantity(stock.getQuantity()- dto.quantity());
         return entityToDto(stock);

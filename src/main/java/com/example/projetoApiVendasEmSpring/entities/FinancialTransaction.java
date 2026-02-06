@@ -31,15 +31,13 @@ public class FinancialTransaction extends BaseEntity {
     @Column(name = "payment_term",nullable = false,length = 30)
     @Enumerated(EnumType.STRING)
     private FinancialPaymentTerm paymentTerm;
-
     @Setter
     @OneToMany(mappedBy = "financialTransaction",fetch = FetchType.LAZY)
     private List<Installment> installment;
 
-    public FinancialTransaction(AppUser createdBy, SalesOrder salesOrder, FinancialTransactionStatus status, FinancialPaymentMethod paymentMethod, FinancialPaymentTerm paymentTerm) {
+    public FinancialTransaction(AppUser createdBy, SalesOrder salesOrder, FinancialPaymentMethod paymentMethod, FinancialPaymentTerm paymentTerm) {
         super(createdBy);
         this.salesOrder = salesOrder;
-        this.status = status;
         this.paymentMethod = paymentMethod;
         this.paymentTerm = paymentTerm;
     }

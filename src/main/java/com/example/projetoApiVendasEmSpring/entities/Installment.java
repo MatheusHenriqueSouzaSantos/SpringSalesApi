@@ -27,15 +27,15 @@ public class Installment extends BaseEntity {
     @Column(name = "due_date",nullable = false)
     private LocalDate dueDate;
 
+    @Setter
     @Column(name = "paid",nullable = false)
     private boolean paid=false;
 
-    public Installment(AppUser createdBy, FinancialTransaction financialTransaction, int installmentNumber, BigDecimal installmentAmount, LocalDate dueDate, boolean paid) {
+    public Installment(AppUser createdBy, FinancialTransaction financialTransaction, int installmentNumber, BigDecimal installmentAmount, LocalDate dueDate) {
         super(createdBy);
         this.financialTransaction = financialTransaction;
         this.installmentNumber = installmentNumber;
         this.installmentAmount = installmentAmount;
         this.dueDate = dueDate;
-        this.paid = paid;
     }
 }
