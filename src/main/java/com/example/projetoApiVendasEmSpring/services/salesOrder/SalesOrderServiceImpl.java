@@ -64,13 +64,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<SalesOrderOutputDto> getAll() {
+    public List<SalesOrderOutputDto> findAll() {
         return salesOrderRepository.findSalesOrderOrderingByStatus().stream()
                 .map(this::entityToDto).toList();
     }
     @Transactional(readOnly = true)
     @Override
-    public SalesOrderOutputDto getById(UUID id) {
+    public SalesOrderOutputDto findById(UUID id) {
         SalesOrder salesOrder=salesOrderRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Sales Order not found"));
         return entityToDto(salesOrder);
@@ -78,7 +78,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Transactional(readOnly = true)
     @Override
-    public SalesOrderOutputDto getByOrderCode(String orderCode) {
+    public SalesOrderOutputDto findByOrderCode(String orderCode) {
         if(orderCode.length()!=6){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Order code in invalid format");
         }

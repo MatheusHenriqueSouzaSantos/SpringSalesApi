@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SalesOrderService {
-    List<SalesOrderOutputDto> getAll();
-    SalesOrderOutputDto getById(UUID id);
-    SalesOrderOutputDto getByOrderCode(String orderCode);
+    List<SalesOrderOutputDto> findAll();
+    SalesOrderOutputDto findById(UUID id);
+    SalesOrderOutputDto findByOrderCode(String orderCode);
     SalesOrderOutputDto create(SalesOrderInputDto dto, UserDetailsImpl loggedUser);
     SalesOrderOutputDto update(UUID id, SalesOrderInputDto dto, UserDetailsImpl loggedUser);
     void cancelSalesOrder(UUID id, UserDetailsImpl loggedUser);
