@@ -1,10 +1,9 @@
 package com.example.projetoApiVendasEmSpring.dtos.salesOrder;
 
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionInputDto;
-import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderIteInputDto;
+import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemInputDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,9 +17,8 @@ public record SalesOrderInputDto(
         UUID sellerId,
         @NotNull(message = "the customerId must not be null")
         @Valid
-        List<SalesOrderIteInputDto> salesOrderItems,
-        @NotBlank(message = "the customerId must not be blank")
-        @DecimalMin(message = "The ")
+        List<SalesOrderItemInputDto> salesOrderItems,
+        @DecimalMin(value = "0.01",message = "The order discount amount must be greater than 0")
         BigDecimal orderDiscountAmount,
         @NotNull(message = "the customerId must not be null")
         @Valid

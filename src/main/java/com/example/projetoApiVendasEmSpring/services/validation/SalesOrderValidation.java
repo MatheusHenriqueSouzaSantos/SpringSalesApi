@@ -2,8 +2,7 @@ package com.example.projetoApiVendasEmSpring.services.validation;
 
 
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionInputDto;
-import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderIteInputDto;
-import com.example.projetoApiVendasEmSpring.entities.FinancialTransaction;
+import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemInputDto;
 import com.example.projetoApiVendasEmSpring.entities.Product;
 import com.example.projetoApiVendasEmSpring.entities.enums.FinancialPaymentTerm;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 
 public final class SalesOrderValidation {
 
-    public void validateSalesOrderItemForCreateOrThrow(SalesOrderIteInputDto itemDto, Product product){
+    public void validateSalesOrderItemForCreateOrThrow(SalesOrderItemInputDto itemDto, Product product){
         if(itemDto.quantity()> product.getStock().getQuantity()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Quantity insufficient of the product with name: "+ product.getName());
         }
@@ -32,9 +31,6 @@ public final class SalesOrderValidation {
         if(dto.financialPaymentTerm()==FinancialPaymentTerm.INSTALLMENT_PAYMENT && dto.installmentCount()==1){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"If financial payment term is installment payment the count of installment " +
                     "must be greater than 1");
-        }
-        if(dto.firstInstalmentDueDate().isBefore(LocalDate.now())){
-            throw new BusinessException(HttpStatus.BAD_REQUEST,"The first installment due date must not be before today");
         }
     }
     public void validateInstallmentsForCreateOrThrow(FinancialTransactionInputDto dto){

@@ -10,7 +10,7 @@ import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDt
 import com.example.projetoApiVendasEmSpring.dtos.product.SimplifyProductOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.salesOrder.SalesOrderInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.salesOrder.SalesOrderOutputDto;
-import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderIteInputDto;
+import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SimplifySellerOutputDto;
 import com.example.projetoApiVendasEmSpring.entities.*;
@@ -192,9 +192,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
     }
 
-    private List<SalesOrderItem> createItems(List<SalesOrderIteInputDto> itemsDto, SalesOrder salesOrder, AppUser loggedUser){
+    private List<SalesOrderItem> createItems(List<SalesOrderItemInputDto> itemsDto, SalesOrder salesOrder, AppUser loggedUser){
         List<SalesOrderItem> salesOrderItems=new ArrayList<>();
-        for (SalesOrderIteInputDto itemDto : itemsDto){
+        for (SalesOrderItemInputDto itemDto : itemsDto){
             Product product=productRepository.findByIdAndActiveTrue(itemDto.productId())
                     .orElseThrow(()->new ResourceNotFoundException("Product with id: "+ itemDto.productId() + " not found"));
             salesOrderValidation.validateSalesOrderItemForCreateOrThrow(itemDto,product);
@@ -218,6 +218,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return financialTransaction;
     }
     private List<Installment> createInstallments(FinancialTransaction financialTransaction, int installmentCount, LocalDate firstInstallmentDueDate, BigDecimal orderTotalAmount, AppUser loggedUser){
+        if(firstInstallmentDueDate==null){
+            firstInstallmentDueDate=LocalDate.now().plusMonths(1);
+        }
         List<Installment> installments=new ArrayList<>();
         BigDecimal bigDecimalInstallmentCount=BigDecimal.valueOf(installmentCount);
         BigDecimal installmentBaseValue=orderTotalAmount.divide(bigDecimalInstallmentCount,2, RoundingMode.DOWN);
