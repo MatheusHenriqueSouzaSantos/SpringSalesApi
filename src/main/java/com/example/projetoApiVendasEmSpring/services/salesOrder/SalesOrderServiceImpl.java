@@ -92,6 +92,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrder.setSalesOrderItems(salesOrderItems);
         BigDecimal subTotalAmount=SalesOrderUtil.sumSubTotalAmountBySalesOrder(salesOrderItems);
         BigDecimal orderDiscountAmount=dto.orderDiscountAmount();
+        if(orderDiscountAmount==null){
+            orderDiscountAmount=BigDecimal.ZERO;
+        }
         if(orderDiscountAmount.compareTo(subTotalAmount)>=0){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The order discount amount must not be greater than items sum of sales order");
         }
@@ -195,7 +198,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             Product product=productRepository.findByIdAndActiveTrue(itemDto.productId())
                     .orElseThrow(()->new ResourceNotFoundException("Product with id: "+ itemDto.productId() + " not found"));
             salesOrderValidation.validateSalesOrderItemForCreateOrThrow(itemDto,product);
-            SalesOrderItem item=new SalesOrderItem(loggedUser,salesOrder,product,itemDto.quantity(),product.getPrice(),itemDto.discountAmount());
+            BigDecimal itemDiscountAmount=itemDto.discountAmount();
+            if(itemDiscountAmount == null){
+                itemDiscountAmount=BigDecimal.ZERO;
+            }
+            SalesOrderItem item=new SalesOrderItem(loggedUser,salesOrder,product,itemDto.quantity(),product.getPrice(),itemDiscountAmount);
             salesOrderItems.add(item);
         }
         salesOrderItemRepository.saveAll(salesOrderItems);
@@ -216,6 +223,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         BigDecimal installmentBaseValue=orderTotalAmount.divide(bigDecimalInstallmentCount,2, RoundingMode.DOWN);
         for (int i=0;i<installmentCount;i++){
             Installment installment=new Installment(loggedUser,financialTransaction,i+1,installmentBaseValue,firstInstallmentDueDate.plusMonths(i));
+            installments.add(installment);
         }
         BigDecimal rest=(orderTotalAmount.subtract(installmentBaseValue.multiply(bigDecimalInstallmentCount)));
         Installment lastInstallment=installments.getLast();
