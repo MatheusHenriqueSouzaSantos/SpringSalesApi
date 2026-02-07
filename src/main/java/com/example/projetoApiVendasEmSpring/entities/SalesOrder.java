@@ -43,7 +43,7 @@ public class SalesOrder extends BaseEntity {
     @Setter
     @Column(name = "status",nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private SalesOrderStatus status=SalesOrderStatus.CREATED;
+    private SalesOrderStatus status=SalesOrderStatus.OPEN;
 
 
     public SalesOrder(AppUser createdBy, Customer customer, Seller seller) {

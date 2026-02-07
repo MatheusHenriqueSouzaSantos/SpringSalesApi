@@ -14,6 +14,8 @@ import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemIn
 import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SimplifySellerOutputDto;
 import com.example.projetoApiVendasEmSpring.entities.*;
+import com.example.projetoApiVendasEmSpring.entities.enums.FinancialTransactionStatus;
+import com.example.projetoApiVendasEmSpring.entities.enums.SalesOrderStatus;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.repositories.*;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +68,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return salesOrderRepository.findSalesOrderOrderingByStatus().stream()
                 .map(this::entityToDto).toList();
     }
+    @Transactional(readOnly = true)
     @Override
     public SalesOrderOutputDto getById(UUID id) {
         SalesOrder salesOrder=salesOrderRepository.findById(id)
@@ -72,6 +76,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return entityToDto(salesOrder);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public SalesOrderOutputDto getByOrderCode(String orderCode) {
         if(orderCode.length()!=6){
@@ -81,7 +86,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                 .orElseThrow(()->new ResourceNotFoundException("Sales Order not found"));
         return entityToDto(salesOrder);
     }
-
+    @Transactional
     @Override
     public SalesOrderOutputDto create(SalesOrderInputDto dto, UserDetailsImpl loggedUser) {
         Customer customer=getCustomerByIdOrThrow(dto.customerId());
@@ -95,7 +100,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         if(orderDiscountAmount==null){
             orderDiscountAmount=BigDecimal.ZERO;
         }
-        if(orderDiscountAmount.compareTo(subTotalAmount)>=0){
+        if(orderDiscountAmount.compareTo(subTotalAmount)>0){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The order discount amount must not be greater than items sum of sales order");
         }
         BigDecimal totalAmount=subTotalAmount.subtract(orderDiscountAmount);
@@ -107,15 +112,64 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderRepository.save(salesOrder);
         return entityToDto(salesOrder);
     }
-
+    @Transactional
     @Override
     public SalesOrderOutputDto update(UUID id, SalesOrderInputDto dto, UserDetailsImpl loggedUser) {
-        return null;
+        SalesOrder salesOrder=salesOrderRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(()->new ResourceNotFoundException("Sales Order not found"));
+        FinancialTransaction financialTransaction=salesOrder.getFinancialTransaction();
+        salesOrderValidation.validateIfASalesOrderCanBeModify(financialTransaction);
+        deleteSalesOrderItems(salesOrder.getSalesOrderItems());
+        deleteInstallments(financialTransaction.getInstallment());
+        Customer customer=getCustomerByIdOrThrow(dto.customerId());
+        Seller seller=getSellerByIdOrThrow(dto.sellerId());
+        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
+        salesOrder.setCustomer(customer);
+        salesOrder.setSeller(seller);
+        salesOrder.setUpdatedAt(Instant.now());
+        salesOrder.setUpdatedBy(updatedBy);
+        List<SalesOrderItem> newSalesOrderItems=createItems(dto.salesOrderItems(),salesOrder,updatedBy);
+        salesOrder.setSalesOrderItems(newSalesOrderItems);
+        BigDecimal subTotalAmount=SalesOrderUtil.sumSubTotalAmountBySalesOrder(newSalesOrderItems);
+        BigDecimal orderDiscountAmount=dto.orderDiscountAmount();
+        if(orderDiscountAmount==null){
+            orderDiscountAmount=BigDecimal.ZERO;
+        }
+        if(orderDiscountAmount.compareTo(subTotalAmount)>0){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The order discount amount must not be greater than items sum of sales order");
+        }
+        BigDecimal totalAmount=subTotalAmount.subtract(orderDiscountAmount);
+        salesOrder.setSubtotalAmount(subTotalAmount);
+        salesOrder.setOrderDiscountAmount(orderDiscountAmount);
+        salesOrder.setTotalAmount(totalAmount);
+        financialTransaction.setUpdatedAt(Instant.now());
+        financialTransaction.setUpdatedBy(updatedBy);
+        salesOrderValidation.validateFinancialTransactionForCreateOrThrow(dto.financialTransaction());
+        salesOrderValidation.validateInstallmentsForCreateOrThrow(dto.financialTransaction());
+        financialTransaction.setPaymentMethod(dto.financialTransaction().financialPaymentMethod());
+        financialTransaction.setPaymentTerm(dto.financialTransaction().financialPaymentTerm());
+        List<Installment> installments=createInstallments(financialTransaction,dto.financialTransaction(),totalAmount,updatedBy);
+        financialTransaction.setInstallment(installments);
+        return entityToDto(salesOrder);
     }
-
+    @Transactional
     @Override
     public void cancelSalesOrder(UUID id, UserDetailsImpl loggedUser) {
-
+        SalesOrder salesOrder=salesOrderRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(()->new ResourceNotFoundException("Sales Order not found"));
+        FinancialTransaction financialTransaction=salesOrder.getFinancialTransaction();
+        salesOrderValidation.validateIfASalesOrderCanBeModify(financialTransaction);
+        inactiveSalesOrderItems(salesOrder.getSalesOrderItems());
+        inactiveInstallments(financialTransaction.getInstallment());
+        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
+        financialTransaction.setUpdatedAt(Instant.now());
+        financialTransaction.setUpdatedBy(updatedBy);
+        financialTransaction.setStatus(FinancialTransactionStatus.CANCELED);
+        financialTransaction.setActive(false);
+        salesOrder.setUpdatedAt(Instant.now());
+        salesOrder.setUpdatedBy(updatedBy);
+        salesOrder.setStatus(SalesOrderStatus.CANCELED);
+        salesOrder.setActive(false);
     }
 
     private SalesOrderOutputDto entityToDto(SalesOrder salesOrder){
@@ -210,21 +264,22 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
     private FinancialTransaction createFinancialTransaction(FinancialTransactionInputDto dto, SalesOrder salesOrder, AppUser loggedUser){
         salesOrderValidation.validateFinancialTransactionForCreateOrThrow(dto);
-        salesOrderValidation.validateInstallmentsForCreateOrThrow(dto);
         FinancialTransaction financialTransaction=new FinancialTransaction(loggedUser,salesOrder,dto.financialPaymentMethod(),dto.financialPaymentTerm());
-        List<Installment> installments=createInstallments(financialTransaction,dto.installmentCount(),dto.firstInstalmentDueDate(),salesOrder.getTotalAmount(),loggedUser);
+        List<Installment> installments=createInstallments(financialTransaction,dto,salesOrder.getTotalAmount(),loggedUser);
         financialTransaction.setInstallment(installments);
         financialTransactionRepository.save(financialTransaction);
         return financialTransaction;
     }
-    private List<Installment> createInstallments(FinancialTransaction financialTransaction, int installmentCount, LocalDate firstInstallmentDueDate, BigDecimal orderTotalAmount, AppUser loggedUser){
+    private List<Installment> createInstallments(FinancialTransaction financialTransaction, FinancialTransactionInputDto financialTransactionDto, BigDecimal orderTotalAmount, AppUser loggedUser){
+        salesOrderValidation.validateInstallmentsForCreateOrThrow(financialTransactionDto);
+        LocalDate firstInstallmentDueDate=financialTransactionDto.firstInstalmentDueDate();
         if(firstInstallmentDueDate==null){
             firstInstallmentDueDate=LocalDate.now().plusMonths(1);
         }
         List<Installment> installments=new ArrayList<>();
-        BigDecimal bigDecimalInstallmentCount=BigDecimal.valueOf(installmentCount);
+        BigDecimal bigDecimalInstallmentCount=BigDecimal.valueOf(financialTransactionDto.installmentCount());
         BigDecimal installmentBaseValue=orderTotalAmount.divide(bigDecimalInstallmentCount,2, RoundingMode.DOWN);
-        for (int i=0;i<installmentCount;i++){
+        for (int i=0;i<financialTransactionDto.installmentCount();i++){
             Installment installment=new Installment(loggedUser,financialTransaction,i+1,installmentBaseValue,firstInstallmentDueDate.plusMonths(i));
             installments.add(installment);
         }
@@ -234,4 +289,26 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         installmentRepository.saveAll(installments);
         return installments;
     }
+    private void deleteSalesOrderItems(List<SalesOrderItem> salesOrderItems){
+        for (SalesOrderItem item : salesOrderItems){
+            salesOrderItemRepository.delete(item);
+        }
+    }
+    private void deleteInstallments(List<Installment> installments){
+        for (Installment installment: installments){
+            installmentRepository.delete(installment);
+        }
+    }
+
+    private void inactiveSalesOrderItems(List<SalesOrderItem> salesOrderItems){
+        for (SalesOrderItem item : salesOrderItems){
+            item.setActive(false);
+        }
+    }
+    private void inactiveInstallments(List<Installment> installments){
+        for (Installment installment: installments){
+            installment.setActive(false);
+        }
+    }
+
 }

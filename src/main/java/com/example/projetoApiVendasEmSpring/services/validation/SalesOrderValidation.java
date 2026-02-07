@@ -3,13 +3,14 @@ package com.example.projetoApiVendasEmSpring.services.validation;
 
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemInputDto;
+import com.example.projetoApiVendasEmSpring.entities.FinancialTransaction;
 import com.example.projetoApiVendasEmSpring.entities.Product;
 import com.example.projetoApiVendasEmSpring.entities.enums.FinancialPaymentTerm;
+import com.example.projetoApiVendasEmSpring.entities.enums.FinancialTransactionStatus;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 public final class SalesOrderValidation {
 
@@ -36,6 +37,18 @@ public final class SalesOrderValidation {
     public void validateInstallmentsForCreateOrThrow(FinancialTransactionInputDto dto){
         if(dto.installmentCount()>60){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"installment count must not be greater than 60");
+        }
+    }
+
+    public void validateIfASalesOrderCanBeModify(FinancialTransaction financialTransaction){
+        if(financialTransaction.getStatus()== FinancialTransactionStatus.IN_PROGRESS){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The payment of salesOrder are starting, and sales order can not be modified");
+        }
+        if(financialTransaction.getStatus()==FinancialTransactionStatus.PAID){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The payment of salesOrder is completed, and sales order can not be modified");
+        }
+        if(financialTransaction.getStatus()==FinancialTransactionStatus.CANCELED){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The payment of salesOrder is already canceled, and sales order can not be modified");
         }
     }
 
