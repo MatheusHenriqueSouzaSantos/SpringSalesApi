@@ -120,7 +120,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         FinancialTransaction financialTransaction=salesOrder.getFinancialTransaction();
         salesOrderValidation.validateIfASalesOrderCanBeModify(financialTransaction);
         deleteSalesOrderItems(salesOrder.getSalesOrderItems());
-        deleteInstallments(financialTransaction.getInstallment());
+        deleteInstallments(financialTransaction.getInstallments());
         Customer customer=getCustomerByIdOrThrow(dto.customerId());
         Seller seller=getSellerByIdOrThrow(dto.sellerId());
         AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
@@ -149,7 +149,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         financialTransaction.setPaymentMethod(dto.financialTransaction().financialPaymentMethod());
         financialTransaction.setPaymentTerm(dto.financialTransaction().financialPaymentTerm());
         List<Installment> installments=createInstallments(financialTransaction,dto.financialTransaction(),totalAmount,updatedBy);
-        financialTransaction.setInstallment(installments);
+        financialTransaction.setInstallments(installments);
         return entityToDto(salesOrder);
     }
     @Transactional
@@ -160,7 +160,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         FinancialTransaction financialTransaction=salesOrder.getFinancialTransaction();
         salesOrderValidation.validateIfASalesOrderCanBeModify(financialTransaction);
         inactiveSalesOrderItems(salesOrder.getSalesOrderItems());
-        inactiveInstallments(financialTransaction.getInstallment());
+        inactiveInstallments(financialTransaction.getInstallments());
         AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
         financialTransaction.setUpdatedAt(Instant.now());
         financialTransaction.setUpdatedBy(updatedBy);
@@ -174,7 +174,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     private SalesOrderOutputDto entityToDto(SalesOrder salesOrder){
         List<SalesOrderItemOutputDto> itemsDto=salesOrderItemsEntityToDto(salesOrder.getSalesOrderItems());
-        List<InstallmentOutputDto> installmentsDto=installmentEntityToDto(salesOrder.getFinancialTransaction().getInstallment());
+        List<InstallmentOutputDto> installmentsDto=installmentEntityToDto(salesOrder.getFinancialTransaction().getInstallments());
         FinancialTransactionOutputDto financialTransactionDto=financialTransactionEntityToDto(salesOrder.getFinancialTransaction(),installmentsDto);
         return salesOrderEntityToDto(salesOrder,financialTransactionDto,itemsDto);
     }
@@ -195,8 +195,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         for(Installment installment : installments){
             AuditAppUserDto createdBy=AuditAppUserDto.appUserToAuditAppUserDto(installment.getCreatedBy());
             AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(installment.getUpdatedBy());
+            boolean overdue=installment.getDueDate().isBefore(LocalDate.now()) && !installment.isPaid();
             InstallmentOutputDto installmentDto= new InstallmentOutputDto(installment.getId(),installment.getCreatedAt(),createdBy,
-                    installment.getUpdatedAt(),updatedBy,installment.isActive(),installment.getInstallmentAmount(),installment.getDueDate(), installment.isPaid());
+                    installment.getUpdatedAt(),updatedBy,installment.isActive(),installment.getInstallmentAmount(),installment.getDueDate(),overdue,installment.isPaid());
             installmentsDto.add(installmentDto);
         }
         return installmentsDto;
@@ -266,7 +267,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderValidation.validateFinancialTransactionForCreateOrThrow(dto);
         FinancialTransaction financialTransaction=new FinancialTransaction(loggedUser,salesOrder,dto.financialPaymentMethod(),dto.financialPaymentTerm());
         List<Installment> installments=createInstallments(financialTransaction,dto,salesOrder.getTotalAmount(),loggedUser);
-        financialTransaction.setInstallment(installments);
+        financialTransaction.setInstallments(installments);
         financialTransactionRepository.save(financialTransaction);
         return financialTransaction;
     }

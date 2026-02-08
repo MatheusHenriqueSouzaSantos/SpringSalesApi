@@ -16,6 +16,7 @@ public record InstallmentOutputDto(
         boolean active,
         BigDecimal installmentAmount,
         LocalDate dueDate,
+        boolean overdue,
         boolean paid
 ) {
 }

@@ -23,4 +23,6 @@ public interface SalesOrderRepository extends BaseRepository<SalesOrder, UUID> {
     public List<SalesOrder> findSalesOrderOrderingByStatus();
 
     public Optional<SalesOrder> findByOrderCode(String orderCode);
+
+    public Optional<SalesOrder> findByActiveTrueAndFinancialTransactionId(UUID financialTransactionId);
 }

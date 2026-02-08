@@ -33,7 +33,8 @@ public class FinancialTransaction extends BaseEntity {
     private FinancialPaymentTerm paymentTerm;
     @Setter
     @OneToMany(mappedBy = "financialTransaction",fetch = FetchType.LAZY)
-    private List<Installment> installment;
+    @OrderBy("installmentNumber ASC")
+    private List<Installment> installments;
 
     public FinancialTransaction(AppUser createdBy, SalesOrder salesOrder, FinancialPaymentMethod paymentMethod, FinancialPaymentTerm paymentTerm) {
         super(createdBy);
