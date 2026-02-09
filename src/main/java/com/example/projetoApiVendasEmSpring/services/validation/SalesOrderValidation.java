@@ -9,9 +9,11 @@ import com.example.projetoApiVendasEmSpring.entities.enums.FinancialPaymentTerm;
 import com.example.projetoApiVendasEmSpring.entities.enums.FinancialTransactionStatus;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public final class SalesOrderValidation {
 
     public void validateSalesOrderItemForCreateOrThrow(SalesOrderItemInputDto itemDto, Product product){
