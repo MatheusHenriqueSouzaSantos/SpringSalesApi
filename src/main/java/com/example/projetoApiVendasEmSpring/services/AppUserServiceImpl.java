@@ -66,18 +66,15 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser createdUser=new AppUser(createBy,dto.fullName(),dto.email(),passwordHash,dto.role());
         return entityToDto(repository.save(createdUser));
     }
-    //do not need to save because object is tracked
     @Transactional
     public AppUserOutputDto updateAppUser(UUID userId,AppUserInputDto dto,UserDetailsImpl loggedUser) {
-        AppUser user=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,userId)
-                .orElseThrow(()->new ResourceNotFoundException("User not found"));
-
+        AppUser user=getAppUserByIdOrThrow(userId);
         Optional<AppUser> existingUserWithReceiveEmail =repository.findAppUserByEmailExceptSystemUser(SystemUser.ID, dto.email());
 
         if(existingUserWithReceiveEmail.isPresent() && existingUserWithReceiveEmail.get().getId()!= userId){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a user with this email");
         }
-        AppUser updatedBy=repository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).get();
+        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
         user.setUpdatedAt(Instant.now());
         user.setUpdatedBy(updatedBy);
         user.setFullName(dto.fullName());
@@ -132,6 +129,14 @@ public class AppUserServiceImpl implements AppUserService {
                 user.getUserRole(),
                 user.isActive()
         );
+    }
+    private AppUser getAppUserByIdOrThrow(UUID id){
+        AppUser appUser= repository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
+                orElseThrow(()->new ResourceNotFoundException("User not found"));
+        if(!appUser.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"App user is inactive and can not do any action");
+        }
+        return appUser;
     }
 
 }

@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
         if(repository.existsBySku(dto.sku())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"a product whit this SKU already exists");
         }
-        AppUser createdBy= getAppUserOrThrow(loggedUser);
+        AppUser createdBy= getAppUserByIdOrThrow(loggedUser.getId());
 
         BigDecimal price= new BigDecimal(dto.price());
 
@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
 
         validatePriceGreaterThanZero(price);
 
-        AppUser updatedBy= getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
@@ -136,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product is already inactivated");
         }
 
-        AppUser updatedBy= getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
@@ -153,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product already active");
         }
 
-        AppUser updatedBy= getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
@@ -188,12 +188,14 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private AppUser getAppUserOrThrow(UserDetailsImpl userDetails){
-        return appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,userDetails.getId())
-                .orElseThrow(()->new ResourceNotFoundException("User not found"));
-
+    private AppUser getAppUserByIdOrThrow(UUID id){
+        AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
+                orElseThrow(()->new ResourceNotFoundException("User not found"));
+        if(!appUser.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"App user is inactive and can not do any action");
+        }
+        return appUser;
     }
-
 
     private Product getProductByIdOrThrow(UUID id){
         return repository.findById(id)

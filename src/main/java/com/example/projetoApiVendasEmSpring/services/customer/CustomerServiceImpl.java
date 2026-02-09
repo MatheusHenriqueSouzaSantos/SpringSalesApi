@@ -15,6 +15,7 @@ import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.repositories.*;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import com.example.projetoApiVendasEmSpring.services.validation.DocumentValidation;
 import com.example.projetoApiVendasEmSpring.services.interfaces.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -146,7 +147,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(individualCustomerRepository.existsByEmail(dto.email()) || corporateCustomerRepository.existsByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        AppUser createBy= getActieAppUserOrThrow(loggedUser);
+        AppUser createBy= getAppUserOrThrow(loggedUser);
         IndividualCustomer customer=new IndividualCustomer(createBy,dto.email(), dto.phone(), dto.fullName(), dto.cpf());
         AddressInputDto addressDto=dto.address();
         Address address=new Address(createBy,addressDto.street(),addressDto.streetNumber(),addressDto.neighborhood(),
@@ -170,7 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(corporateCustomerRepository.existsByEmail(dto.email()) || individualCustomerRepository.existsByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        AppUser createBy= getActieAppUserOrThrow(loggedUser);
+        AppUser createBy= getAppUserOrThrow(loggedUser);
         CorporateCustomer customer=new CorporateCustomer(createBy,dto.email(), dto.phone(),dto.legalName(),dto.tradeName(),dto.stateRegistration(),
                 dto.cnpj());
         AddressInputDto addressDto=dto.address();
@@ -198,7 +199,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         Address addressUpdate=customerUpdate.getAddress();
-        AppUser updatedBy=this.getActieAppUserOrThrow(loggedUser);
+        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
         addressUpdate.setUpdatedAt(Instant.now());
         addressUpdate.setUpdatedBy(updatedBy);
         addressUpdate.setStreet(dto.address().street());
@@ -232,7 +233,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         Address addressUpdate=customerUpdate.getAddress();
-        AppUser updatedBy=this.getActieAppUserOrThrow(loggedUser);
+        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
         addressUpdate.setUpdatedAt(Instant.now());
         addressUpdate.setUpdatedBy(updatedBy);
         addressUpdate.setStreet(dto.address().street());
@@ -264,7 +265,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customer.setUpdatedAt(Instant.now());
-        AppUser updatedBy= getActieAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getAppUserOrThrow(loggedUser);
         customer.setUpdatedBy(updatedBy);
         customer.setActive(false);
     }
@@ -279,7 +280,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customer.setUpdatedAt(Instant.now());
-        AppUser updatedBy= getActieAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getAppUserOrThrow(loggedUser);
         customer.setUpdatedBy(updatedBy);
         customer.setActive(true);
     }
@@ -316,8 +317,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
-    private AppUser getActieAppUserOrThrow(UserDetailsImpl loggedUser){
-        return appUserRepository.findByIdAndActiveTrue(loggedUser.getId()).
+    private AppUser getAppUserOrThrow(UserDetailsImpl loggedUser){
+         AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
+        if(!appUser.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"App user is inactive and can not do any action");
+        }
+        return appUser;
     }
 }

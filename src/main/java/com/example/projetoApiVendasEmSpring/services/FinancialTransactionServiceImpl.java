@@ -57,8 +57,11 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
     @Transactional
     @Override
     public List<InstallmentOutputDto> payInstallment(UUID financialTransactionId, UserDetailsImpl loggedUser) {
-        FinancialTransaction financialTransaction=repository.findByIdAndActiveTrue(financialTransactionId)
+        FinancialTransaction financialTransaction=repository.findById(financialTransactionId)
                 .orElseThrow(()->new ResourceNotFoundException("Financial transaction not found"));
+        if(!financialTransaction.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Financial transaction is inactive");
+        }
         List<Installment> installments=financialTransaction.getInstallments();
         SalesOrder salesOrder=salesOrderRepository.findByActiveTrueAndFinancialTransactionId(financialTransaction.getId())
                 .orElseThrow(()->new ResourceNotFoundException("Sales order not found"));

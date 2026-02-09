@@ -87,8 +87,7 @@ public class SellerServiceImpl implements SellerService {
         if(sellerExistsWithEmailReceived.isPresent()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a seller with this email");
         }
-        AppUser createdBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
-                .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        AppUser createdBy=getAppUserByIdOrThrow(loggedUser.getId());
         Seller seller=new Seller(createdBy,dto.fullName(), dto.cpf(),dto.email(), dto.phone());
         repository.save(seller);
         return entityToDto(seller);
@@ -104,8 +103,7 @@ public class SellerServiceImpl implements SellerService {
         if(sellerExistsWithEmailReceived.isPresent() && sellerExistsWithEmailReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a seller with this email");
         }
-        AppUser updatedBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
-                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
+        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
         updatedSeller.setUpdatedBy(updatedBy);
         updatedSeller.setFullName(dto.fullName());
         updatedSeller.setEmail(dto.email());
@@ -120,8 +118,7 @@ public class SellerServiceImpl implements SellerService {
         if(!seller.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The seller is already inactive");
         }
-        AppUser updatedBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
-                        .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
         seller.setUpdatedAt(Instant.now());
         seller.setUpdatedBy(updatedBy);
         seller.setActive(false);
@@ -133,8 +130,7 @@ public class SellerServiceImpl implements SellerService {
         if(seller.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The seller is already active");
         }
-        AppUser updatedBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
-                .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
         seller.setUpdatedAt(Instant.now());
         seller.setUpdatedBy(updatedBy);
         seller.setActive(true);
@@ -150,5 +146,15 @@ public class SellerServiceImpl implements SellerService {
 
     private Seller getSellerAccordingMethodOrThrow(Supplier<Optional<Seller>> supplier){
         return supplier.get().orElseThrow(()->new ResourceNotFoundException("Seller not found"));
+    }
+
+
+    private AppUser getAppUserByIdOrThrow(UUID id){
+        AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
+                orElseThrow(()->new ResourceNotFoundException("User not found"));
+        if(!appUser.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"App user is inactive and can not do any action");
+        }
+        return appUser;
     }
 }

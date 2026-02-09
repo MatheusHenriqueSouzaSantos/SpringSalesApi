@@ -20,6 +20,7 @@ import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.repositories.*;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import com.example.projetoApiVendasEmSpring.services.interfaces.SalesOrderService;
 import com.example.projetoApiVendasEmSpring.services.validation.SalesOrderValidation;
 import org.springframework.http.HttpStatus;
@@ -233,18 +234,30 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     private Customer getCustomerByIdOrThrow(UUID id){
-        return customerRepository.findByIdAndActiveTrue(id)
+        Customer customer= customerRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
+        if(!customer.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Customer is inactive and can not be in SalesOrder");
+        }
+        return customer;
     }
 
     private Seller getSellerByIdOrThrow(UUID id){
-        return sellerRepository.findByIdAndActiveTrue(id)
+        Seller seller=sellerRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
+        if(!seller.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"seller is inactive and can not be in SalesOrder");
+        }
+        return seller;
     }
 
     private AppUser getAppUserByIdOrThrow(UUID id){
-        return appUserRepository.findByIdAndActiveTrue(id)
-                .orElseThrow(()->new ResourceNotFoundException("Customer not found"));
+        AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
+                orElseThrow(()->new ResourceNotFoundException("User not found"));
+        if(!appUser.isActive()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"App user is inactive and can not do any action");
+        }
+        return appUser;
     }
 
     private List<SalesOrderItem> createItems(List<SalesOrderItemInputDto> itemsDto, SalesOrder salesOrder, AppUser loggedUser){
