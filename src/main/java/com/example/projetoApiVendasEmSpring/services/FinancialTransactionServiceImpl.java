@@ -65,7 +65,7 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
         List<Installment> installments=financialTransaction.getInstallments();
         SalesOrder salesOrder=salesOrderRepository.findByActiveTrueAndFinancialTransactionId(financialTransaction.getId())
                 .orElseThrow(()->new ResourceNotFoundException("Sales order not found"));
-        AppUser updatedBy=appUserRepository.findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
+        AppUser updatedBy=appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
         int installmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrue(financialTransactionId);
         int paidInstallmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrueAndPaidTrue(financialTransactionId);

@@ -147,7 +147,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(individualCustomerRepository.existsByEmail(dto.email()) || corporateCustomerRepository.existsByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        AppUser createBy= getAppUserOrThrow(loggedUser);
+        AppUser createBy= getActiveAppUserOrThrow(loggedUser);
         IndividualCustomer customer=new IndividualCustomer(createBy,dto.email(), dto.phone(), dto.fullName(), dto.cpf());
         AddressInputDto addressDto=dto.address();
         Address address=new Address(createBy,addressDto.street(),addressDto.streetNumber(),addressDto.neighborhood(),
@@ -171,7 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(corporateCustomerRepository.existsByEmail(dto.email()) || individualCustomerRepository.existsByEmail(dto.email())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
-        AppUser createBy= getAppUserOrThrow(loggedUser);
+        AppUser createBy= getActiveAppUserOrThrow(loggedUser);
         CorporateCustomer customer=new CorporateCustomer(createBy,dto.email(), dto.phone(),dto.legalName(),dto.tradeName(),dto.stateRegistration(),
                 dto.cnpj());
         AddressInputDto addressDto=dto.address();
@@ -199,7 +199,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         Address addressUpdate=customerUpdate.getAddress();
-        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
+        AppUser updatedBy=this.getActiveAppUserOrThrow(loggedUser);
         addressUpdate.setUpdatedAt(Instant.now());
         addressUpdate.setUpdatedBy(updatedBy);
         addressUpdate.setStreet(dto.address().street());
@@ -233,7 +233,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         Address addressUpdate=customerUpdate.getAddress();
-        AppUser updatedBy=this.getAppUserOrThrow(loggedUser);
+        AppUser updatedBy=this.getActiveAppUserOrThrow(loggedUser);
         addressUpdate.setUpdatedAt(Instant.now());
         addressUpdate.setUpdatedBy(updatedBy);
         addressUpdate.setStreet(dto.address().street());
@@ -265,7 +265,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customer.setUpdatedAt(Instant.now());
-        AppUser updatedBy= getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getActiveAppUserOrThrow(loggedUser);
         customer.setUpdatedBy(updatedBy);
         customer.setActive(false);
     }
@@ -280,7 +280,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customer.setUpdatedAt(Instant.now());
-        AppUser updatedBy= getAppUserOrThrow(loggedUser);
+        AppUser updatedBy= getActiveAppUserOrThrow(loggedUser);
         customer.setUpdatedBy(updatedBy);
         customer.setActive(true);
     }
@@ -317,7 +317,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
-    private AppUser getAppUserOrThrow(UserDetailsImpl loggedUser){
+    private AppUser getActiveAppUserOrThrow(UserDetailsImpl loggedUser){
          AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId()).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
         if(!appUser.isActive()){

@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
         if(repository.existsBySku(dto.sku())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"a product whit this SKU already exists");
         }
-        AppUser createdBy= getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser createdBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
         BigDecimal price= new BigDecimal(dto.price());
 
@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
 
         validatePriceGreaterThanZero(price);
 
-        AppUser updatedBy= getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
@@ -136,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product is already inactivated");
         }
 
-        AppUser updatedBy= getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
@@ -153,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product already active");
         }
 
-        AppUser updatedBy= getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
@@ -188,7 +188,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private AppUser getAppUserByIdOrThrow(UUID id){
+    private AppUser getActiveAppUserByIdOrThrow(UUID id){
         AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
         if(!appUser.isActive()){

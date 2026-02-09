@@ -92,7 +92,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     public SalesOrderOutputDto create(SalesOrderInputDto dto, UserDetailsImpl loggedUser) {
         Customer customer=getCustomerByIdOrThrow(dto.customerId());
         Seller seller=getSellerByIdOrThrow(dto.sellerId());
-        AppUser createdBy=getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser createdBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         SalesOrder salesOrder=new SalesOrder(createdBy,customer,seller);
         List<SalesOrderItem> salesOrderItems= createItems(dto.salesOrderItems(),salesOrder,createdBy);
         salesOrder.setSalesOrderItems(salesOrderItems);
@@ -124,7 +124,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         deleteInstallments(financialTransaction.getInstallments());
         Customer customer=getCustomerByIdOrThrow(dto.customerId());
         Seller seller=getSellerByIdOrThrow(dto.sellerId());
-        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         salesOrder.setCustomer(customer);
         salesOrder.setSeller(seller);
         salesOrder.setUpdatedAt(Instant.now());
@@ -162,7 +162,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderValidation.validateIfASalesOrderCanBeModify(financialTransaction);
         inactiveSalesOrderItems(salesOrder.getSalesOrderItems());
         inactiveInstallments(financialTransaction.getInstallments());
-        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         financialTransaction.setUpdatedAt(Instant.now());
         financialTransaction.setUpdatedBy(updatedBy);
         financialTransaction.setStatus(FinancialTransactionStatus.CANCELED);
@@ -251,7 +251,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return seller;
     }
 
-    private AppUser getAppUserByIdOrThrow(UUID id){
+    private AppUser getActiveAppUserByIdOrThrow(UUID id){
         AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
         if(!appUser.isActive()){

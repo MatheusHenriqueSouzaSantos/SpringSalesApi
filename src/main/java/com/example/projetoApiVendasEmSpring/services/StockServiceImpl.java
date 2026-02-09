@@ -52,7 +52,7 @@ public class StockServiceImpl implements StockService {
     @Transactional
     public StockOutputDto increaseQuantity(UUID id, StockInputDto dto, UserDetailsImpl loggedUser) {
         Stock stock= getStockByIdAndActiveOrThrow(id);
-        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         stock.setUpdatedBy(updatedBy);
         stock.setQuantity(stock.getQuantity()+dto.quantity());
 
@@ -67,7 +67,7 @@ public class StockServiceImpl implements StockService {
         if(dto.quantity()>stock.getQuantity()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Insufficient quantity in stock");
         }
-        AppUser updatedBy=getAppUserByIdOrThrow(loggedUser.getId());
+        AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         stock.setUpdatedBy(updatedBy);
 
         stock.setQuantity(stock.getQuantity()- dto.quantity());
@@ -82,7 +82,7 @@ public class StockServiceImpl implements StockService {
         return repository.findByIdAndActiveTrue(id).
                 orElseThrow(()->new ResourceNotFoundException("Stock not found"));
     }
-    private AppUser getAppUserByIdOrThrow(UUID id){
+    private AppUser getActiveAppUserByIdOrThrow(UUID id){
         AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
                 orElseThrow(()->new ResourceNotFoundException("User not found"));
         if(!appUser.isActive()){
