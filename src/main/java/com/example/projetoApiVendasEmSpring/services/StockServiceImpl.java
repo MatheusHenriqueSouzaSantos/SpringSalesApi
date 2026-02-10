@@ -54,7 +54,7 @@ public class StockServiceImpl implements StockService {
         Stock stock= getStockByIdAndActiveOrThrow(id);
         AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         stock.setUpdatedBy(updatedBy);
-        stock.setQuantity(stock.getQuantity()+dto.quantity());
+        stock.increaseQuantity(dto.quantity());
 
         return entityToDto(stock);
     }
@@ -70,7 +70,7 @@ public class StockServiceImpl implements StockService {
         AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
         stock.setUpdatedBy(updatedBy);
 
-        stock.setQuantity(stock.getQuantity()- dto.quantity());
+        stock.decreaseQuantity(dto.quantity());
         return entityToDto(stock);
     }
 

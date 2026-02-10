@@ -92,11 +92,12 @@ public class ProductServiceImpl implements ProductService {
         AppUser createdBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
         Product product=new Product(createdBy,dto.sku(),dto.name(),dto.description(),dto.price());
+        repository.save(product);
         Stock stock=new Stock(createdBy,product,INIT_QUANTITY);
         product.setStock(stock);
 
         stockRepository.save(stock);
-        return entityToDto(repository.save(product));
+        return entityToDto(product);
     }
 
     @Override

@@ -265,12 +265,14 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         for (SalesOrderItemInputDto itemDto : itemsDto){
             Product product=productRepository.findByIdAndActiveTrue(itemDto.productId())
                     .orElseThrow(()->new ResourceNotFoundException("Product with id: "+ itemDto.productId() + " not found"));
+            Stock stock=product.getStock();
             salesOrderValidation.validateSalesOrderItemForCreateOrThrow(itemDto,product);
             BigDecimal itemDiscountAmount=itemDto.discountAmount();
             if(itemDiscountAmount == null){
                 itemDiscountAmount=BigDecimal.ZERO;
             }
             SalesOrderItem item=new SalesOrderItem(loggedUser,salesOrder,product,itemDto.quantity(),product.getPrice(),itemDiscountAmount);
+            stock.decreaseQuantity(item.getQuantity());
             salesOrderItems.add(item);
         }
         salesOrderItemRepository.saveAll(salesOrderItems);
@@ -305,6 +307,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
     private void deleteSalesOrderItems(List<SalesOrderItem> salesOrderItems){
         for (SalesOrderItem item : salesOrderItems){
+            Stock stock=item.getProduct().getStock();
+            stock.increaseQuantity(item.getQuantity());
             salesOrderItemRepository.delete(item);
         }
     }
