@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorDto> handleException(Exception ex){
-        return ResponseEntity.internalServerError().body(new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Internal Error"));
+//        return ResponseEntity.internalServerError().body(new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Internal Error"));
+        return ResponseEntity.internalServerError().body(new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),ex.getMessage()));
     }
 }

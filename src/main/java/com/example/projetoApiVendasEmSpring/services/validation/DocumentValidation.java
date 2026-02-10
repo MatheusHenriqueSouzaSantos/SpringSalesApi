@@ -12,9 +12,14 @@ public class DocumentValidation {
         if(cpf.length()!=11){
             return false;
         }
-        if(!cpf.matches("//d{11}")){
+        if(!cpf.matches("\\d{11}")){
             return false;
         }
+
+        if(cpf.chars().distinct().count()==1){
+            return false;
+        }
+
         int sum=0;
         for (int i=0;i<9;i++){
             sum+=Character.getNumericValue(cpf.charAt(i))*(10-i);
@@ -50,7 +55,10 @@ public class DocumentValidation {
         if(cnpj.length()!=14){
             return false;
         }
-        if(!cnpj.matches("//d{14}")){
+        if(!cnpj.matches("\\d{14}")){
+            return false;
+        }
+        if(cnpj.chars().distinct().count()==1){
             return false;
         }
         int[] weight1 = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};

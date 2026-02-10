@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
-// active end-point are used when to search associate at order
+// active end-point are used when to search associate a customer at order
     private final CustomerService service;
 
     public CustomerController(CustomerService service) {
