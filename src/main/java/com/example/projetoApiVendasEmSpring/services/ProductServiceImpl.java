@@ -91,11 +91,7 @@ public class ProductServiceImpl implements ProductService {
         }
         AppUser createdBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
-        BigDecimal price= new BigDecimal(dto.price());
-
-        validatePriceGreaterThanZero(price);
-
-        Product product=new Product(createdBy,dto.sku(),dto.name(),dto.description(),price);
+        Product product=new Product(createdBy,dto.sku(),dto.name(),dto.description(),dto.price());
         Stock stock=new Stock(createdBy,product,INIT_QUANTITY);
         product.setStock(stock);
 
@@ -112,17 +108,13 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The product is inactive, active it to update");
         }
 
-        BigDecimal price=new BigDecimal(dto.price());
-
-        validatePriceGreaterThanZero(price);
-
         AppUser updatedBy= getActiveAppUserByIdOrThrow(loggedUser.getId());
 
         product.setUpdatedAt(Instant.now());
         product.setUpdatedBy(updatedBy);
         product.setName(dto.name());
         product.setDescription(dto.description());
-        product.setPrice(price);
+        product.setPrice(dto.price());
 
         return entityToDto(product);
     }
@@ -182,11 +174,6 @@ public class ProductServiceImpl implements ProductService {
                 stockDto);
     }
 
-    private void validatePriceGreaterThanZero(BigDecimal price){
-        if(price.compareTo(BigDecimal.ZERO) <=0){
-            throw new BusinessException(HttpStatus.BAD_REQUEST,"The price must be greater than zero");
-        }
-    }
 
     private AppUser getActiveAppUserByIdOrThrow(UUID id){
         AppUser appUser= appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,id).
