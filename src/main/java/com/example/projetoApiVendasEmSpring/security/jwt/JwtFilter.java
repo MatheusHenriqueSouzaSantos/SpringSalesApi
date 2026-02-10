@@ -4,6 +4,7 @@ import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,13 +46,21 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         String token=authorization.substring(7);
-
-        Claims claims= jwtService.validateJwt(token);
+        Claims claims;
+        try{
+            claims= jwtService.validateJwt(token);
+        }
+        catch (ExpiredJwtException ex){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\" : \"The Token Jwt is expired\"}");
+            return;
+        }
 
         if(!securityUtils.verifyUserIsActiveByEmail(claims.getSubject())){
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\" : \"The User is inactive\"");
+            response.getWriter().write("{\"error\" : \"The User is inactive\"}");
             return;
         }
         Authentication authentication;
