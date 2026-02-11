@@ -23,6 +23,7 @@ import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import com.example.projetoApiVendasEmSpring.services.interfaces.SalesOrderService;
 import com.example.projetoApiVendasEmSpring.services.validation.SalesOrderValidation;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,8 +110,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrder.setOrderDiscountAmount(orderDiscountAmount);
         salesOrder.setTotalAmount(totalAmount);
         FinancialTransaction financialTransaction= createFinancialTransaction(dto.financialTransaction(),salesOrder,createdBy);
+        List<Installment> installments=createInstallments(financialTransaction,dto.financialTransaction(),salesOrder.getTotalAmount(),createdBy);
+        financialTransaction.setInstallments(installments);
         salesOrder.setFinancialTransaction(financialTransaction);
         salesOrderRepository.save(salesOrder);
+        salesOrderItemRepository.saveAll(salesOrderItems);
+        financialTransactionRepository.save(financialTransaction);
+        installmentRepository.saveAll(installments);
         return entityToDto(salesOrder);
     }
     @Transactional
@@ -185,8 +191,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(item.getCreatedBy());
             AuditAppUserDto updatedBy= AuditAppUserDto.appUserToAuditAppUserDto(item.getUpdatedBy());
             SimplifyProductOutputDto productDto=new SimplifyProductOutputDto(item.getProduct().getId(),item.getProduct().getName(),item.getProduct().getSku());
+            BigDecimal itemTotal=item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())).subtract(item.getDiscountAmount());
             SalesOrderItemOutputDto itemDto=new SalesOrderItemOutputDto(item.getId(),item.getCreatedAt(),createdBy, item.getUpdatedAt(),
-            updatedBy,item.isActive(),productDto,item.getQuantity(),item.getUnitPrice(),item.getDiscountAmount());
+            updatedBy,item.isActive(),productDto,item.getQuantity(),item.getUnitPrice(),item.getDiscountAmount(),itemTotal);
             itemsDto.add(itemDto);
         }
         return itemsDto;
@@ -206,9 +213,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private FinancialTransactionOutputDto financialTransactionEntityToDto(FinancialTransaction financialTransaction,List<InstallmentOutputDto> installmentsDto ){
         AuditAppUserDto createdBy=AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getCreatedBy());
         AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getUpdatedBy());
-        int installmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrue(financialTransaction.getId());
-        int paidInstallmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrueAndPaidTrue(financialTransaction.getId());
-        BigDecimal sumOfPaidInstallment=installmentRepository.getSumOfPaidInstallmentsByFinancialTransactionId(financialTransaction.getId());
+        long installmentCount=SalesOrderUtil.countInstallments(installmentsDto);
+        long paidInstallmentCount=SalesOrderUtil.countPaidInstallments(installmentsDto);
+        BigDecimal sumOfPaidInstallment=SalesOrderUtil.sumOfPaidInstallments(installmentsDto);
         return new FinancialTransactionOutputDto(financialTransaction.getId(),financialTransaction.getCreatedAt(),
                 createdBy,financialTransaction.getUpdatedAt(),updatedBy,financialTransaction.isActive(),financialTransaction.getStatus(),financialTransaction.getPaymentMethod(),
                 financialTransaction.getPaymentTerm(),installmentsDto,installmentCount,paidInstallmentCount,sumOfPaidInstallment);
@@ -219,11 +226,12 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(salesOrder.getUpdatedBy());
         SimplifySellerOutputDto simplifySeller=new SimplifySellerOutputDto(salesOrder.getSeller().getId(),salesOrder.getSeller().getFullName(),
                 salesOrder.getSeller().getCpf());
+        Customer customer=(Customer) Hibernate.unproxy(salesOrder.getCustomer());
         SimplifyCustomerOutputDto simplifyCustomer;
-        if(salesOrder.getCustomer() instanceof IndividualCustomer){
-            simplifyCustomer= SimplifyIndividualCustomerOutputDto.individualCustomerEntityToSimplifyDto((IndividualCustomer) salesOrder.getCustomer());
-        } else if (salesOrder.getCustomer() instanceof CorporateCustomer) {
-            simplifyCustomer= SimplifyCorporateCustomerOutputDto.corporateCustomerEntityToSimplifyDto((CorporateCustomer) salesOrder.getCustomer());
+        if(customer instanceof IndividualCustomer){
+            simplifyCustomer= SimplifyIndividualCustomerOutputDto.individualCustomerEntityToSimplifyDto((IndividualCustomer) customer);
+        } else if (customer instanceof CorporateCustomer) {
+            simplifyCustomer= SimplifyCorporateCustomerOutputDto.corporateCustomerEntityToSimplifyDto((CorporateCustomer) customer);
         }
         else {
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Type of customer is invalid");
@@ -275,15 +283,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             stock.decreaseQuantity(item.getQuantity());
             salesOrderItems.add(item);
         }
-        salesOrderItemRepository.saveAll(salesOrderItems);
         return salesOrderItems;
     }
     private FinancialTransaction createFinancialTransaction(FinancialTransactionInputDto dto, SalesOrder salesOrder, AppUser loggedUser){
         salesOrderValidation.validateFinancialTransactionForCreateOrThrow(dto);
         FinancialTransaction financialTransaction=new FinancialTransaction(loggedUser,salesOrder,dto.financialPaymentMethod(),dto.financialPaymentTerm());
-        List<Installment> installments=createInstallments(financialTransaction,dto,salesOrder.getTotalAmount(),loggedUser);
-        financialTransaction.setInstallments(installments);
-        financialTransactionRepository.save(financialTransaction);
         return financialTransaction;
     }
     private List<Installment> createInstallments(FinancialTransaction financialTransaction, FinancialTransactionInputDto financialTransactionDto, BigDecimal orderTotalAmount, AppUser loggedUser){
@@ -302,7 +306,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         BigDecimal rest=(orderTotalAmount.subtract(installmentBaseValue.multiply(bigDecimalInstallmentCount)));
         Installment lastInstallment=installments.getLast();
         lastInstallment.setInstallmentAmount(lastInstallment.getInstallmentAmount().add(rest));
-        installmentRepository.saveAll(installments);
         return installments;
     }
     private void deleteSalesOrderItems(List<SalesOrderItem> salesOrderItems){

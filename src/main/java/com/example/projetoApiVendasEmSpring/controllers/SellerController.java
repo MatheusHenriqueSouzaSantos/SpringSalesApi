@@ -50,7 +50,6 @@ public class SellerController {
         return ResponseEntity.ok(service.findActiveSellerByCpf(cpf));
     }
 
-
     @PostMapping
     public ResponseEntity<SellerOutputDto> createSeller(@RequestBody @Valid SellerCreateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         SellerOutputDto createdSeller =service.createSeller(dto,loggedUser);

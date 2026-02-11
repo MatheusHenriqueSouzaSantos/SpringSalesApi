@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@DiscriminatorValue("INDIVIDUAL_CUSTOMER")
+@DiscriminatorValue("CORPORATE_CUSTOMER")
 public class CorporateCustomer extends Customer{
     @Setter
     @Column(name = "legal_name", nullable = false, length = 150)

@@ -17,6 +17,7 @@ import com.example.projetoApiVendasEmSpring.repositories.InstallmentRepository;
 import com.example.projetoApiVendasEmSpring.repositories.SalesOrderRepository;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.interfaces.FinancialTransactionService;
+import com.example.projetoApiVendasEmSpring.services.salesOrder.SalesOrderUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,8 +68,8 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
                 .orElseThrow(()->new ResourceNotFoundException("Sales order not found"));
         AppUser updatedBy=appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUser.getId())
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
-        int installmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrue(financialTransactionId);
-        int paidInstallmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrueAndPaidTrue(financialTransactionId);
+        long installmentCount=installments.stream().filter(Installment::isActive).count();
+        long paidInstallmentCount=installments.stream().filter(Installment::isActive).filter(Installment::isPaid).count();
         if(installmentCount==paidInstallmentCount){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"all installments are paid");
         }
@@ -82,8 +83,8 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
                 break;
             }
         }
-        installmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrue(financialTransactionId);
-        paidInstallmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrueAndPaidTrue(financialTransactionId);
+        installmentCount=installments.stream().filter(Installment::isActive).count();
+        paidInstallmentCount=installments.stream().filter(Installment::isActive).filter(Installment::isPaid).count();
         if(installmentCount==paidInstallmentCount){
             financialTransaction.setStatus(FinancialTransactionStatus.PAID);
         }
@@ -94,9 +95,9 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
         AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getCreatedBy());
         AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getUpdatedBy());
         List<InstallmentOutputDto> installmentsDto=financialTransaction.getInstallments().stream().map(this::installmentEntityToDto).toList();
-        int installmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrue(financialTransaction.getId());
-        int paidInstallmentCount=installmentRepository.countByFinancialTransactionIdAndActiveTrueAndPaidTrue(financialTransaction.getId());
-        BigDecimal paidTotalAmount=installmentRepository.getSumOfPaidInstallmentsByFinancialTransactionId(financialTransaction.getId());
+        long installmentCount= SalesOrderUtil.countInstallments(installmentsDto);
+        long paidInstallmentCount=SalesOrderUtil.countPaidInstallments(installmentsDto);
+        BigDecimal paidTotalAmount=SalesOrderUtil.sumOfPaidInstallments(installmentsDto);
         return new FinancialTransactionOutputDto(financialTransaction.getId(),financialTransaction.getCreatedAt(),createdBy,
                 financialTransaction.getUpdatedAt(),updatedBy,financialTransaction.isActive(),financialTransaction.getStatus(),
                 financialTransaction.getPaymentMethod(),financialTransaction.getPaymentTerm(),installmentsDto,installmentCount,paidInstallmentCount,

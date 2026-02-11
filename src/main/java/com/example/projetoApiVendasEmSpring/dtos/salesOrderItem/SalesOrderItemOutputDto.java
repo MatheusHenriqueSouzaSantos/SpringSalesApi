@@ -17,6 +17,7 @@ public record SalesOrderItemOutputDto(
         SimplifyProductOutputDto product,
         int quantity,
         BigDecimal unitPrice,
-        BigDecimal discountAmount
+        BigDecimal discountAmount,
+        BigDecimal itemTotal
 ) {
 }

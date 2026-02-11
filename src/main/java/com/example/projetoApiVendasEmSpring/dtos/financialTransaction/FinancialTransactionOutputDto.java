@@ -22,8 +22,8 @@ public record FinancialTransactionOutputDto(
           FinancialPaymentMethod paymentMethod,
           FinancialPaymentTerm paymentTerm,
           List<InstallmentOutputDto> installments,
-          int installmentCount,
-          int paidInstallmentCount,
+          long installmentCount,
+          long paidInstallmentCount,
           BigDecimal totalPaidAmount
 ) {
 }

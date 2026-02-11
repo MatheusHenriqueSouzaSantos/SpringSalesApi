@@ -13,16 +13,5 @@ public interface InstallmentRepository extends BaseRepository<Installment, UUID>
     List<Installment> findByFinancialTransactionIdAndActiveTrue(UUID financialTransactionId);
     List<Installment> findByFinancialTransactionIdAndPaidTrueAndActiveTrue(UUID financialTransactionId);
     List<Installment> findByFinancialTransactionIdAndPaidFalseAndActiveTrue(UUID financialTransactionId);
-    int countByFinancialTransactionIdAndActiveTrue(UUID financialTransactionId);
-    int countByFinancialTransactionIdAndActiveTrueAndPaidTrue(UUID financialTransactionId);
-
-    @Query("""
-        select coalesce(sum(i.installmentAmount),0)
-            from Installment i
-                where i.financialTransaction.id = :financialTransactionId
-                    and i.active = true
-                        and i.paid =true
-    """)
-    BigDecimal getSumOfPaidInstallmentsByFinancialTransactionId(@Param("FinancialTransactionId") UUID financialTransactionId);
 
 }

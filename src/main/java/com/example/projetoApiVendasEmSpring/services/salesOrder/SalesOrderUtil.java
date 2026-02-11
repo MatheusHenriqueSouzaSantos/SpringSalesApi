@@ -1,5 +1,6 @@
 package com.example.projetoApiVendasEmSpring.services.salesOrder;
 
+import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
 import com.example.projetoApiVendasEmSpring.entities.SalesOrderItem;
 
 import java.math.BigDecimal;
@@ -14,5 +15,18 @@ public final class SalesOrderUtil {
             salesOrderSubTotalAmount=salesOrderSubTotalAmount.add(itemTotal);
         }
         return salesOrderSubTotalAmount;
+    }
+
+    public static long countInstallments(List<InstallmentOutputDto> installmentsDto){
+        return installmentsDto.stream().filter(InstallmentOutputDto::active).count();
+    }
+
+    public static long countPaidInstallments(List<InstallmentOutputDto> installmentsDto) {
+        return installmentsDto.stream().filter(InstallmentOutputDto::active).filter(InstallmentOutputDto::paid).count();
+    }
+
+    public static BigDecimal sumOfPaidInstallments(List<InstallmentOutputDto> installmentsDto){
+        return installmentsDto.stream().filter(InstallmentOutputDto::active).filter(InstallmentOutputDto::paid).map(InstallmentOutputDto::installmentAmount)
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
     }
 }
