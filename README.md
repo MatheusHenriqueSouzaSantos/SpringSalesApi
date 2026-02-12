@@ -4,7 +4,14 @@ A REST API for managing Sales Order,Financial Transactions, Customers, Products,
 
 Builth with Spring Boot, Spring Security And Jwt Authentication.  
 
+## Tech Stack
 
+- Java 21
+- Spring Boot
+- Spring Security with JWT
+- PostgreSql
+- PostMan
+- Maven
 
 
 ## License
