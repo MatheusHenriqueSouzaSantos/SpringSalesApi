@@ -6,8 +6,8 @@ Builth with Spring Boot, Spring Security And Jwt Authentication.
 
 ## Features
 
-- Managing Orders Sales, and their financial transactions, Customers And their Address, Products And Stock, Sellers.
-- Managing Financial Transactions with their installments with possibility Cash or Installment Payment  
+- Managing Orders Sales, and their Financial Transactions, Customers And their Address, Products And Stock, Sellers.
+- Managing Financial Transactions with their Installments with possibility Cash or Installment Payment  
 - Managing Acess by System Users with diferent roles.
   
 ## Entity Relationship Diagram
