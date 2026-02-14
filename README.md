@@ -4,6 +4,12 @@ A REST API for managing Sales Order,Financial Transactions, Customers, Products,
 
 Builth with Spring Boot, Spring Security And Jwt Authentication.  
 
+## Features
+
+- Managing Orders Sales, and their financial transactions, Customers And their Address, Products And Stock, Sellers.
+- Managing Financial Transactions with their installments with possibility Cash or Installment Payment  
+- Managing Acess by System Users with diferent roles.
+  
 ## Entity Relationship Diagram
 
 <img width="2788" height="2301" alt="DER drawio" src="https://github.com/user-attachments/assets/2835bc6e-535c-4919-ae2f-e18a1ef208b1" />
