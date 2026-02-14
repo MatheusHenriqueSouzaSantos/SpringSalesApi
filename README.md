@@ -14,7 +14,7 @@ Builth with Spring Boot, Spring Security And Jwt Authentication.
 
 <img width="2788" height="2301" alt="DER drawio" src="https://github.com/user-attachments/assets/2835bc6e-535c-4919-ae2f-e18a1ef208b1" />
 
-
+* All Entities have relationship with App Users, but I did not include  the conection to avoid cluttering Diagram
 ## Tech Stack
 
 - Java 21
