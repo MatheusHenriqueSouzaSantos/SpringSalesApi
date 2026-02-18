@@ -1,6 +1,7 @@
 package com.example.projetoApiVendasEmSpring.services;
 
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
+import com.example.projetoApiVendasEmSpring.excepetions.EmailAddressAlreadyIsUseException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
@@ -59,7 +60,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Transactional
     public AppUserOutputDto createAppUser(AppUserInputDto dto, UserDetailsImpl loggedUser) {
         if(repository.verifyExistenceAppUserByEmail(dto.email())){
-            throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a user with this email");
+            throw new EmailAddressAlreadyIsUseException();
         }
         AppUser createBy=getActiveAppUserByIdOrThrow(loggedUser.getId());
         String passwordHash=encoder.encode(dto.password());
