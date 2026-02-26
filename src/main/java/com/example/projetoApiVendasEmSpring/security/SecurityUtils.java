@@ -1,8 +1,8 @@
 package com.example.projetoApiVendasEmSpring.security;
 
-import com.example.projetoApiVendasEmSpring.entities.AppUser;
+import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
-import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
+import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

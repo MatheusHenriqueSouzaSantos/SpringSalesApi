@@ -1,0 +1,79 @@
+package com.example.projetoApiVendasEmSpring.appUser.controller;
+
+import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserInputDto;
+import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserOutputDto;
+import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.appUser.service.AppUserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/users")
+@Validated
+public class AppUserController {
+
+    private final AppUserService service;
+
+    public AppUserController(AppUserService service){
+        this.service=service;
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<List<AppUserOutputDto>> getAllUsers(){
+        return ResponseEntity.ok(service.findAllAppUsers());
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<AppUserOutputDto> getUserById(@PathVariable UUID id){
+        return ResponseEntity.ok(service.findAppUserById(id));
+    }
+    @GetMapping("/me")
+    public ResponseEntity<AppUserOutputDto> getUserMe(@AuthenticationPrincipal UserDetailsImpl loggedUser){
+        return ResponseEntity.ok(service.getAppUserMe(loggedUser));
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @Validated
+    @GetMapping("/get-by-email")
+    public ResponseEntity<AppUserOutputDto> getUserByEmail(@RequestParam(name = "email",required = true) @Email(message = "email in invalid format") @NotBlank(message = "email can not be blank") String email){
+        return ResponseEntity.ok(service.findAppUserByEmail(email));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<AppUserOutputDto> createUser(@RequestBody @Valid AppUserInputDto dto, @AuthenticationPrincipal UserDetailsImpl user){
+        AppUserOutputDto createdUserDto=service.createAppUser(dto,user);
+        URI location=URI.create("/api/users/" + createdUserDto.id());
+        return ResponseEntity.created(location).body(createdUserDto);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<AppUserOutputDto> updateUser(@PathVariable UUID id,@RequestBody @Valid AppUserInputDto dto,@AuthenticationPrincipal UserDetailsImpl loggedUser){
+        return ResponseEntity.ok(service.updateAppUser(id,dto,loggedUser));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deActivateById(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
+        service.deActivateAppUserById(id,loggedUser);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/reactivate/{id}")
+    public ResponseEntity<Void> reactivateById(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+        service.reActivateAppUserById(id,loggedUser);
+        return ResponseEntity.noContent().build();
+    }
+
+}

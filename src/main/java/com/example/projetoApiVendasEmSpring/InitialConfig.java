@@ -1,9 +1,9 @@
 package com.example.projetoApiVendasEmSpring;
 
-import com.example.projetoApiVendasEmSpring.entities.AppUser;
-import com.example.projetoApiVendasEmSpring.entities.enums.UserRole;
+import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
+import com.example.projetoApiVendasEmSpring.appUser.entity.UserRole;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
-import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
+import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

@@ -1,12 +1,12 @@
 package com.example.projetoApiVendasEmSpring.services.validation;
 
 
-import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionInputDto;
-import com.example.projetoApiVendasEmSpring.dtos.salesOrderItem.SalesOrderItemInputDto;
-import com.example.projetoApiVendasEmSpring.entities.FinancialTransaction;
-import com.example.projetoApiVendasEmSpring.entities.Product;
-import com.example.projetoApiVendasEmSpring.entities.enums.FinancialPaymentTerm;
-import com.example.projetoApiVendasEmSpring.entities.enums.FinancialTransactionStatus;
+import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionInputDto;
+import com.example.projetoApiVendasEmSpring.salesOrderItem.dto.SalesOrderItemInputDto;
+import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransaction;
+import com.example.projetoApiVendasEmSpring.product.entity.Product;
+import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialPaymentTerm;
+import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransactionStatus;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

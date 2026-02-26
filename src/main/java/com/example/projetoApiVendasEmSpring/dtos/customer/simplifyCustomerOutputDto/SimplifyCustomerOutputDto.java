@@ -1,4 +1,0 @@
-package com.example.projetoApiVendasEmSpring.dtos.customer.simplifyCustomerOutputDto;
-
-public sealed interface SimplifyCustomerOutputDto permits SimplifyIndividualCustomerOutputDto,SimplifyCorporateCustomerOutputDto {
-}

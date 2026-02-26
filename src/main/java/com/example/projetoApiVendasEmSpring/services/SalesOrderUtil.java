@@ -1,7 +1,7 @@
 package com.example.projetoApiVendasEmSpring.services;
 
 import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
-import com.example.projetoApiVendasEmSpring.entities.SalesOrderItem;
+import com.example.projetoApiVendasEmSpring.salesOrderItem.entity.SalesOrderItem;
 
 import java.math.BigDecimal;
 import java.util.List;

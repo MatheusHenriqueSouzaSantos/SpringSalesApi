@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.dtos.installment;
 
-import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
+import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
