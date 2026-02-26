@@ -17,7 +17,6 @@ import com.example.projetoApiVendasEmSpring.repositories.*;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import com.example.projetoApiVendasEmSpring.services.validation.DocumentValidation;
-import com.example.projetoApiVendasEmSpring.services.interfaces.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

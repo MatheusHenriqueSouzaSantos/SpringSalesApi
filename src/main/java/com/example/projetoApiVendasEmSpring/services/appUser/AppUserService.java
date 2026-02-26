@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services.interfaces;
+package com.example.projetoApiVendasEmSpring.services.appUser;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;

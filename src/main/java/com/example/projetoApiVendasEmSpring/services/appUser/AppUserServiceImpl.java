@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.services.appUser;
 
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.EmailAddressAlreadyIsUseException;
@@ -9,7 +9,7 @@ import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.entities.AppUser;
 import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.AppUserService;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

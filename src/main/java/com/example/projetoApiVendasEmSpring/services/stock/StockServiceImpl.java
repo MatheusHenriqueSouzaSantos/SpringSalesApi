@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.services.stock;
 
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockOutputDto;
@@ -10,7 +10,7 @@ import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.repositories.StockRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.StockService;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

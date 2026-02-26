@@ -1,7 +1,5 @@
-package com.example.projetoApiVendasEmSpring.services.interfaces;
+package com.example.projetoApiVendasEmSpring.services.seller;
 
-import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.dtos.customer.individualCustomer.IndividualCustomerUpdateDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerUpdateDto;

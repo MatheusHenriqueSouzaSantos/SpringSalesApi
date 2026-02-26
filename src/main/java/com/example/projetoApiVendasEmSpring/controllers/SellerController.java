@@ -4,7 +4,7 @@ import com.example.projetoApiVendasEmSpring.dtos.seller.SellerCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerUpdateDto;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.SellerService;
+import com.example.projetoApiVendasEmSpring.services.seller.SellerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

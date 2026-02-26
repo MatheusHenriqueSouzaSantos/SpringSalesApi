@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.services.product;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductCreateDto;
@@ -15,12 +15,11 @@ import com.example.projetoApiVendasEmSpring.repositories.ProductRepository;
 import com.example.projetoApiVendasEmSpring.repositories.StockRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.ProductService;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;

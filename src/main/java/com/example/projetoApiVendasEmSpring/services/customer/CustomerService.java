@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services.interfaces;
+package com.example.projetoApiVendasEmSpring.services.customer;
 
 import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.CorporateCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.customer.customerOutputDto.CustomerOutPutDto;

@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services.salesOrder;
+package com.example.projetoApiVendasEmSpring.services;
 
 import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
 import com.example.projetoApiVendasEmSpring.entities.SalesOrderItem;

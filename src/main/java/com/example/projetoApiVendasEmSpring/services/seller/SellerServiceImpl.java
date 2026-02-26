@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.services.seller;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.seller.SellerCreateDto;
@@ -11,7 +11,7 @@ import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundExceptio
 import com.example.projetoApiVendasEmSpring.repositories.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.repositories.SellerRepository;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.SellerService;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import com.example.projetoApiVendasEmSpring.services.validation.DocumentValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

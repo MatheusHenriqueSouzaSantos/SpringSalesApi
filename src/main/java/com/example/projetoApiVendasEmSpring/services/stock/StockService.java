@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services.interfaces;
+package com.example.projetoApiVendasEmSpring.services.stock;
 
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockOutputDto;

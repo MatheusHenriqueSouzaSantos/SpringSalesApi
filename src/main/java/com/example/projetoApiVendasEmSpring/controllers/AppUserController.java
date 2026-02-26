@@ -3,7 +3,7 @@ package com.example.projetoApiVendasEmSpring.controllers;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AppUserOutputDto;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.AppUserService;
+import com.example.projetoApiVendasEmSpring.services.appUser.AppUserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

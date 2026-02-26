@@ -3,7 +3,7 @@ package com.example.projetoApiVendasEmSpring.controllers;
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockInputDto;
 import com.example.projetoApiVendasEmSpring.dtos.stock.StockOutputDto;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.StockService;
+import com.example.projetoApiVendasEmSpring.services.stock.StockService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.services.financialTransaction;
 
 import com.example.projetoApiVendasEmSpring.dtos.appUser.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionOutputDto;
@@ -16,8 +16,8 @@ import com.example.projetoApiVendasEmSpring.repositories.FinancialTransactionRep
 import com.example.projetoApiVendasEmSpring.repositories.InstallmentRepository;
 import com.example.projetoApiVendasEmSpring.repositories.SalesOrderRepository;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.FinancialTransactionService;
-import com.example.projetoApiVendasEmSpring.services.salesOrder.SalesOrderUtil;
+import com.example.projetoApiVendasEmSpring.services.SalesOrderUtil;
+import com.example.projetoApiVendasEmSpring.services.SystemUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

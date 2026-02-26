@@ -20,8 +20,8 @@ import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.repositories.*;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.services.SalesOrderUtil;
 import com.example.projetoApiVendasEmSpring.services.SystemUser;
-import com.example.projetoApiVendasEmSpring.services.interfaces.SalesOrderService;
 import com.example.projetoApiVendasEmSpring.services.validation.SalesOrderValidation;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
@@ -97,7 +97,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder salesOrder=new SalesOrder(createdBy,customer,seller);
         List<SalesOrderItem> salesOrderItems= createItems(dto.salesOrderItems(),salesOrder,createdBy);
         salesOrder.setSalesOrderItems(salesOrderItems);
-        BigDecimal subTotalAmount=SalesOrderUtil.sumSubTotalAmountBySalesOrder(salesOrderItems);
+        BigDecimal subTotalAmount= SalesOrderUtil.sumSubTotalAmountBySalesOrder(salesOrderItems);
         BigDecimal orderDiscountAmount=dto.orderDiscountAmount();
         if(orderDiscountAmount==null){
             orderDiscountAmount=BigDecimal.ZERO;

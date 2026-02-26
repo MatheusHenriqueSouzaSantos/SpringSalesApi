@@ -4,7 +4,7 @@ import com.example.projetoApiVendasEmSpring.dtos.product.ProductCreateDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.product.ProductUpdateDto;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.interfaces.ProductService;
+import com.example.projetoApiVendasEmSpring.services.product.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;

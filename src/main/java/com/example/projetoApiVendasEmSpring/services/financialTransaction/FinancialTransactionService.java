@@ -1,8 +1,7 @@
-package com.example.projetoApiVendasEmSpring.services.interfaces;
+package com.example.projetoApiVendasEmSpring.services.financialTransaction;
 
 import com.example.projetoApiVendasEmSpring.dtos.financialTransaction.FinancialTransactionOutputDto;
 import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
-import com.example.projetoApiVendasEmSpring.entities.Installment;
 import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
 
 import java.util.List;
