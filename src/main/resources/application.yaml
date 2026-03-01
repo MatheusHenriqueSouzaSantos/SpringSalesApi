@@ -4,7 +4,7 @@ spring:
   flyway:
     enabled: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/projeto_api_de_vendas_em_spring?options=-c%20TimeZone=UTC
+    url: jdbc:postgresql://localhost:5432/spring_sales_api?options=-c%20TimeZone=UTC
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
   jpa:
