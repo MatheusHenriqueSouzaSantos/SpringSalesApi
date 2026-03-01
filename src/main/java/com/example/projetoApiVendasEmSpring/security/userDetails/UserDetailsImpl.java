@@ -1,15 +1,12 @@
-package com.example.projetoApiVendasEmSpring.security;
+package com.example.projetoApiVendasEmSpring.security.userDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor

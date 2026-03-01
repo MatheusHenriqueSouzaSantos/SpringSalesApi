@@ -2,7 +2,7 @@ package com.example.projetoApiVendasEmSpring.address.entity;
 
 import com.example.projetoApiVendasEmSpring.customer.entity.Customer;
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
-import com.example.projetoApiVendasEmSpring.entities.BaseEntity;
+import com.example.projetoApiVendasEmSpring.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

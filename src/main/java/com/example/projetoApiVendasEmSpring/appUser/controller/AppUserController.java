@@ -2,7 +2,7 @@ package com.example.projetoApiVendasEmSpring.appUser.controller;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserOutputDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.appUser.service.AppUserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

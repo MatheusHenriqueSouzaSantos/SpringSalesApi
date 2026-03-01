@@ -3,7 +3,7 @@ package com.example.projetoApiVendasEmSpring.seller.controller;
 import com.example.projetoApiVendasEmSpring.seller.dto.SellerCreateDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SellerOutputDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SellerUpdateDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.seller.service.SellerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

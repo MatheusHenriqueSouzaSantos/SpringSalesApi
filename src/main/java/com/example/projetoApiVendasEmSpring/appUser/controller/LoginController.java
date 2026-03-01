@@ -1,11 +1,11 @@
 package com.example.projetoApiVendasEmSpring.appUser.controller;
 
-import com.example.projetoApiVendasEmSpring.dtos.login.JwtTokenDto;
-import com.example.projetoApiVendasEmSpring.dtos.login.LoginAppUserInputDto;
+import com.example.projetoApiVendasEmSpring.appUser.dto.login.JwtTokenDto;
+import com.example.projetoApiVendasEmSpring.appUser.dto.login.LoginAppUserInputDto;
 import com.example.projetoApiVendasEmSpring.excepetions.ApiErrorDto;
 import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.security.jwt.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

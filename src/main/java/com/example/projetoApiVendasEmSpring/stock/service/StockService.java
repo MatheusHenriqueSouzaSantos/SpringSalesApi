@@ -2,7 +2,7 @@ package com.example.projetoApiVendasEmSpring.stock.service;
 
 import com.example.projetoApiVendasEmSpring.stock.dto.StockInputDto;
 import com.example.projetoApiVendasEmSpring.stock.dto.StockOutputDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 
 import java.util.UUID;
 

@@ -3,7 +3,7 @@ package com.example.projetoApiVendasEmSpring.product.service;
 import com.example.projetoApiVendasEmSpring.product.dto.ProductCreateDto;
 import com.example.projetoApiVendasEmSpring.product.dto.ProductOutputDto;
 import com.example.projetoApiVendasEmSpring.product.dto.ProductUpdateDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 
 import java.util.List;
 import java.util.UUID;

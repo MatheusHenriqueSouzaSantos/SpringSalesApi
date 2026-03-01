@@ -1,7 +1,7 @@
 package com.example.projetoApiVendasEmSpring.salesOrder.repository;
 
-import com.example.projetoApiVendasEmSpring.repositories.BaseRepository;
-import com.example.projetoApiVendasEmSpring.salesOrder.entities.SalesOrder;
+import com.example.projetoApiVendasEmSpring.common.BaseRepository;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrder;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

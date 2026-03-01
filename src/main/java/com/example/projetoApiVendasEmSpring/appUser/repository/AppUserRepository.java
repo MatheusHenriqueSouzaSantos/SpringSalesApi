@@ -1,7 +1,7 @@
 package com.example.projetoApiVendasEmSpring.appUser.repository;
 
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
-import com.example.projetoApiVendasEmSpring.repositories.BaseRepository;
+import com.example.projetoApiVendasEmSpring.common.BaseRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

@@ -1,7 +1,6 @@
-package com.example.projetoApiVendasEmSpring.entities;
+package com.example.projetoApiVendasEmSpring.common;
 
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
-import com.example.projetoApiVendasEmSpring.services.Utils;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +13,7 @@ import java.util.UUID;
 public abstract class BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(name = "created_at",nullable = false, updatable = false)
     private Instant createdAt;
@@ -33,7 +33,6 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void prePersist(){
-        id= Utils.GenerateRadomUUID();
         this.createdAt=Instant.now();
         onPrePersist();
     }

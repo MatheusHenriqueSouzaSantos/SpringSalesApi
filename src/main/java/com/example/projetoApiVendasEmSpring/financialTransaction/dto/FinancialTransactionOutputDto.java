@@ -1,7 +1,6 @@
 package com.example.projetoApiVendasEmSpring.financialTransaction.dto;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
-import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialPaymentMethod;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialPaymentTerm;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransactionStatus;

@@ -7,7 +7,7 @@ import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.
 import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerUpdateDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerCreateDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerUpdateDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 
 import java.util.List;
 import java.util.UUID;

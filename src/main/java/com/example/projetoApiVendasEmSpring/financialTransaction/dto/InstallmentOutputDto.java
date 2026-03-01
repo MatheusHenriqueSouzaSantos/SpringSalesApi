@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.dtos.installment;
+package com.example.projetoApiVendasEmSpring.financialTransaction.dto;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
 

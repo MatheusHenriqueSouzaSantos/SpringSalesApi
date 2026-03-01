@@ -2,7 +2,7 @@ package com.example.projetoApiVendasEmSpring.salesOrder.controller;
 
 import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderInputDto;
 import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderOutputDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.salesOrder.service.SalesOrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@ package com.example.projetoApiVendasEmSpring.appUser.service;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserOutputDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.salesOrderItem.dto;
+package com.example.projetoApiVendasEmSpring.salesOrder.dto;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.product.dto.SimplifyProductOutputDto;

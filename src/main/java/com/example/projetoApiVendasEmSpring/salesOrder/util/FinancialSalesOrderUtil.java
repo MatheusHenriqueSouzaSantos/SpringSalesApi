@@ -1,12 +1,12 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.salesOrder.util;
 
-import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.entity.SalesOrderItem;
+import com.example.projetoApiVendasEmSpring.financialTransaction.dto.InstallmentOutputDto;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrderItem;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public final class SalesOrderUtil {
+public final class FinancialSalesOrderUtil {
     public static BigDecimal sumSubTotalAmountBySalesOrder(List<SalesOrderItem> items){
         BigDecimal salesOrderSubTotalAmount=new BigDecimal("0");
         for(SalesOrderItem item: items){

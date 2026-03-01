@@ -1,7 +1,7 @@
-package com.example.projetoApiVendasEmSpring.entities;
+package com.example.projetoApiVendasEmSpring.financialTransaction.entity;
 
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
-import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransaction;
+import com.example.projetoApiVendasEmSpring.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

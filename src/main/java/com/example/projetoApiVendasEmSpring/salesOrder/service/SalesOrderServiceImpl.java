@@ -12,33 +12,33 @@ import com.example.projetoApiVendasEmSpring.customer.dto.simplifyCustomerOutputD
 import com.example.projetoApiVendasEmSpring.customer.dto.simplifyCustomerOutputDto.SimplifyIndividualCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionInputDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionOutputDto;
-import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
+import com.example.projetoApiVendasEmSpring.financialTransaction.dto.InstallmentOutputDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransaction;
+import com.example.projetoApiVendasEmSpring.financialTransaction.entity.Installment;
 import com.example.projetoApiVendasEmSpring.financialTransaction.repository.FinancialTransactionRepository;
+import com.example.projetoApiVendasEmSpring.financialTransaction.repository.InstallmentRepository;
 import com.example.projetoApiVendasEmSpring.product.dto.SimplifyProductOutputDto;
 import com.example.projetoApiVendasEmSpring.product.entity.Product;
 import com.example.projetoApiVendasEmSpring.product.repository.ProductRepository;
 import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderInputDto;
 import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderOutputDto;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.dto.SalesOrderItemInputDto;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.dto.SalesOrderItemOutputDto;
+import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderItemInputDto;
+import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderItemOutputDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SimplifySellerOutputDto;
-import com.example.projetoApiVendasEmSpring.entities.*;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransactionStatus;
-import com.example.projetoApiVendasEmSpring.salesOrder.entities.SalesOrder;
-import com.example.projetoApiVendasEmSpring.salesOrder.entities.SalesOrderStatus;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrder;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrderStatus;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
-import com.example.projetoApiVendasEmSpring.repositories.*;
 import com.example.projetoApiVendasEmSpring.salesOrder.repository.SalesOrderRepository;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.entity.SalesOrderItem;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.repository.SalesOrderItemRepository;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrderItem;
+import com.example.projetoApiVendasEmSpring.salesOrder.repository.SalesOrderItemRepository;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.seller.entity.Seller;
 import com.example.projetoApiVendasEmSpring.seller.repository.SellerRepository;
-import com.example.projetoApiVendasEmSpring.services.SalesOrderUtil;
-import com.example.projetoApiVendasEmSpring.services.SystemUser;
-import com.example.projetoApiVendasEmSpring.services.validation.SalesOrderValidation;
+import com.example.projetoApiVendasEmSpring.salesOrder.util.FinancialSalesOrderUtil;
+import com.example.projetoApiVendasEmSpring.SystemUser;
+import com.example.projetoApiVendasEmSpring.salesOrder.validation.SalesOrderValidation;
 import com.example.projetoApiVendasEmSpring.stock.entity.Stock;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
@@ -114,7 +114,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder salesOrder=new SalesOrder(createdBy,customer,seller);
         List<SalesOrderItem> salesOrderItems= createItems(dto.salesOrderItems(),salesOrder,createdBy);
         salesOrder.setSalesOrderItems(salesOrderItems);
-        BigDecimal subTotalAmount= SalesOrderUtil.sumSubTotalAmountBySalesOrder(salesOrderItems);
+        BigDecimal subTotalAmount= FinancialSalesOrderUtil.sumSubTotalAmountBySalesOrder(salesOrderItems);
         BigDecimal orderDiscountAmount=dto.orderDiscountAmount();
         if(orderDiscountAmount==null){
             orderDiscountAmount=BigDecimal.ZERO;
@@ -154,7 +154,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrder.setUpdatedBy(updatedBy);
         List<SalesOrderItem> newSalesOrderItems=createItems(dto.salesOrderItems(),salesOrder,updatedBy);
         salesOrder.setSalesOrderItems(newSalesOrderItems);
-        BigDecimal subTotalAmount=SalesOrderUtil.sumSubTotalAmountBySalesOrder(newSalesOrderItems);
+        BigDecimal subTotalAmount= FinancialSalesOrderUtil.sumSubTotalAmountBySalesOrder(newSalesOrderItems);
         BigDecimal orderDiscountAmount=dto.orderDiscountAmount();
         if(orderDiscountAmount==null){
             orderDiscountAmount=BigDecimal.ZERO;
@@ -230,9 +230,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private FinancialTransactionOutputDto financialTransactionEntityToDto(FinancialTransaction financialTransaction,List<InstallmentOutputDto> installmentsDto ){
         AuditAppUserDto createdBy=AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getCreatedBy());
         AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getUpdatedBy());
-        long installmentCount=SalesOrderUtil.countInstallments(installmentsDto);
-        long paidInstallmentCount=SalesOrderUtil.countPaidInstallments(installmentsDto);
-        BigDecimal sumOfPaidInstallment=SalesOrderUtil.sumOfPaidInstallments(installmentsDto);
+        long installmentCount= FinancialSalesOrderUtil.countInstallments(installmentsDto);
+        long paidInstallmentCount= FinancialSalesOrderUtil.countPaidInstallments(installmentsDto);
+        BigDecimal sumOfPaidInstallment= FinancialSalesOrderUtil.sumOfPaidInstallments(installmentsDto);
         return new FinancialTransactionOutputDto(financialTransaction.getId(),financialTransaction.getCreatedAt(),
                 createdBy,financialTransaction.getUpdatedAt(),updatedBy,financialTransaction.isActive(),financialTransaction.getStatus(),financialTransaction.getPaymentMethod(),
                 financialTransaction.getPaymentTerm(),installmentsDto,installmentCount,paidInstallmentCount,sumOfPaidInstallment);

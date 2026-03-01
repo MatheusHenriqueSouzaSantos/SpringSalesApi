@@ -1,8 +1,8 @@
 package com.example.projetoApiVendasEmSpring.security.jwt;
 
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsService;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

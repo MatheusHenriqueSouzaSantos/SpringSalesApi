@@ -2,22 +2,22 @@ package com.example.projetoApiVendasEmSpring.financialTransaction.service;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionOutputDto;
-import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
+import com.example.projetoApiVendasEmSpring.financialTransaction.dto.InstallmentOutputDto;
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransaction;
-import com.example.projetoApiVendasEmSpring.entities.Installment;
-import com.example.projetoApiVendasEmSpring.salesOrder.entities.SalesOrder;
+import com.example.projetoApiVendasEmSpring.financialTransaction.entity.Installment;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrder;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransactionStatus;
-import com.example.projetoApiVendasEmSpring.salesOrder.entities.SalesOrderStatus;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrderStatus;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.financialTransaction.repository.FinancialTransactionRepository;
-import com.example.projetoApiVendasEmSpring.repositories.InstallmentRepository;
+import com.example.projetoApiVendasEmSpring.financialTransaction.repository.InstallmentRepository;
 import com.example.projetoApiVendasEmSpring.salesOrder.repository.SalesOrderRepository;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.SalesOrderUtil;
-import com.example.projetoApiVendasEmSpring.services.SystemUser;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.salesOrder.util.FinancialSalesOrderUtil;
+import com.example.projetoApiVendasEmSpring.SystemUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,9 +95,9 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
         AuditAppUserDto createdBy= AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getCreatedBy());
         AuditAppUserDto updatedBy=AuditAppUserDto.appUserToAuditAppUserDto(financialTransaction.getUpdatedBy());
         List<InstallmentOutputDto> installmentsDto=financialTransaction.getInstallments().stream().map(this::installmentEntityToDto).toList();
-        long installmentCount= SalesOrderUtil.countInstallments(installmentsDto);
-        long paidInstallmentCount=SalesOrderUtil.countPaidInstallments(installmentsDto);
-        BigDecimal paidTotalAmount=SalesOrderUtil.sumOfPaidInstallments(installmentsDto);
+        long installmentCount= FinancialSalesOrderUtil.countInstallments(installmentsDto);
+        long paidInstallmentCount= FinancialSalesOrderUtil.countPaidInstallments(installmentsDto);
+        BigDecimal paidTotalAmount= FinancialSalesOrderUtil.sumOfPaidInstallments(installmentsDto);
         return new FinancialTransactionOutputDto(financialTransaction.getId(),financialTransaction.getCreatedAt(),createdBy,
                 financialTransaction.getUpdatedAt(),updatedBy,financialTransaction.isActive(),financialTransaction.getStatus(),
                 financialTransaction.getPaymentMethod(),financialTransaction.getPaymentTerm(),installmentsDto,installmentCount,paidInstallmentCount,

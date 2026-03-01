@@ -1,8 +1,8 @@
-package com.example.projetoApiVendasEmSpring.services.validation;
+package com.example.projetoApiVendasEmSpring.salesOrder.validation;
 
 
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionInputDto;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.dto.SalesOrderItemInputDto;
+import com.example.projetoApiVendasEmSpring.salesOrder.dto.SalesOrderItemInputDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransaction;
 import com.example.projetoApiVendasEmSpring.product.entity.Product;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialPaymentTerm;

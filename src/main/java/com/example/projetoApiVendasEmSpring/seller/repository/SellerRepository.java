@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.seller.repository;
 
-import com.example.projetoApiVendasEmSpring.repositories.BaseRepository;
+import com.example.projetoApiVendasEmSpring.common.BaseRepository;
 import com.example.projetoApiVendasEmSpring.seller.entity.Seller;
 
 import java.util.Optional;

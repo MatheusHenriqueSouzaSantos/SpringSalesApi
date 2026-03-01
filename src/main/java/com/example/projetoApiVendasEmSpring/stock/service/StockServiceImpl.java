@@ -9,8 +9,8 @@ import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundExceptio
 import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
 import com.example.projetoApiVendasEmSpring.stock.repository.StockRepository;
 import com.example.projetoApiVendasEmSpring.security.SecurityUtils;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
-import com.example.projetoApiVendasEmSpring.services.SystemUser;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.SystemUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

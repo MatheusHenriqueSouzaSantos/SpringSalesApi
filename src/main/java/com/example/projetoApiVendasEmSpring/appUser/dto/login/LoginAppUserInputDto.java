@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.dtos.login;
+package com.example.projetoApiVendasEmSpring.appUser.dto.login;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

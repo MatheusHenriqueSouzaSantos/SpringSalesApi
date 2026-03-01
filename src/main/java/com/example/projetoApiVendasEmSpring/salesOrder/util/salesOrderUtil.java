@@ -1,18 +1,13 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.salesOrder.util;
 
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
-import java.util.UUID;
 
 @Component
-public class Utils {
+public class salesOrderUtil {
 
     private static final SecureRandom orderCodeRadom=new SecureRandom();
-
-    public static UUID GenerateRadomUUID(){
-        return UUID.randomUUID();
-    }
 
     public static String GenerateOrderCode(){
         String characters="ACDEFGHJKLMNPQRTUVWXY23456789";

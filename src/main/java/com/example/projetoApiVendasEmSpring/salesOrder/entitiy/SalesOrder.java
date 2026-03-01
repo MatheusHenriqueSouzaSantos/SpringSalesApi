@@ -1,12 +1,11 @@
-package com.example.projetoApiVendasEmSpring.salesOrder.entities;
+package com.example.projetoApiVendasEmSpring.salesOrder.entitiy;
 
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
 import com.example.projetoApiVendasEmSpring.customer.entity.Customer;
-import com.example.projetoApiVendasEmSpring.entities.BaseEntity;
+import com.example.projetoApiVendasEmSpring.common.BaseEntity;
 import com.example.projetoApiVendasEmSpring.financialTransaction.entity.FinancialTransaction;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.entity.SalesOrderItem;
 import com.example.projetoApiVendasEmSpring.seller.entity.Seller;
-import com.example.projetoApiVendasEmSpring.services.Utils;
+import com.example.projetoApiVendasEmSpring.salesOrder.util.salesOrderUtil;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -53,13 +52,9 @@ public class SalesOrder extends BaseEntity {
 
     public SalesOrder(AppUser createdBy, Customer customer, Seller seller) {
         super(createdBy);
-        this.orderCode=Utils.GenerateOrderCode();
+        this.orderCode= salesOrderUtil.GenerateOrderCode();
         this.customer = customer;
         this.seller = seller;
     }
 
-    @Override
-    protected void onPrePersist(){
-        super.onPrePersist();
-    }
 }

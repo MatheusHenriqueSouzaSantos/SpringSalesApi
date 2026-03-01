@@ -1,12 +1,13 @@
 package com.example.projetoApiVendasEmSpring.services;
 
+import com.example.projetoApiVendasEmSpring.SystemUser;
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserInputDto;
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserOutputDto;
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
 import com.example.projetoApiVendasEmSpring.appUser.entity.UserRole;
 import com.example.projetoApiVendasEmSpring.excepetions.EmailAddressAlreadyIsUseException;
 import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.appUser.service.AppUserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

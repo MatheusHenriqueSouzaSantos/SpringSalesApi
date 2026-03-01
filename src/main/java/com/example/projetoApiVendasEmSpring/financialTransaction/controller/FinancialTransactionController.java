@@ -1,8 +1,8 @@
 package com.example.projetoApiVendasEmSpring.financialTransaction.controller;
 
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionOutputDto;
-import com.example.projetoApiVendasEmSpring.dtos.installment.InstallmentOutputDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.financialTransaction.dto.InstallmentOutputDto;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.financialTransaction.service.FinancialTransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

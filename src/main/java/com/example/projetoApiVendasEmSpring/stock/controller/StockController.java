@@ -2,7 +2,7 @@ package com.example.projetoApiVendasEmSpring.stock.controller;
 
 import com.example.projetoApiVendasEmSpring.stock.dto.StockInputDto;
 import com.example.projetoApiVendasEmSpring.stock.dto.StockOutputDto;
-import com.example.projetoApiVendasEmSpring.security.UserDetailsImpl;
+import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.stock.service.StockService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

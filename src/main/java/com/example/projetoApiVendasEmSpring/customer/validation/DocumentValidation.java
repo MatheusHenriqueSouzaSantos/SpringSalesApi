@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services.validation;
+package com.example.projetoApiVendasEmSpring.customer.validation;
 
 import org.springframework.stereotype.Component;
 

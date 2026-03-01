@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.salesOrder.entities;
+package com.example.projetoApiVendasEmSpring.salesOrder.entitiy;
 
 public enum SalesOrderStatus {
     OPEN,

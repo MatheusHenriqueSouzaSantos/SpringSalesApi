@@ -1,7 +1,6 @@
 package com.example.projetoApiVendasEmSpring.salesOrder.dto;
 
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionInputDto;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.dto.SalesOrderItemInputDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

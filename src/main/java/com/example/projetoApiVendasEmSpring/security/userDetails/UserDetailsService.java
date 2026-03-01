@@ -1,9 +1,9 @@
-package com.example.projetoApiVendasEmSpring.security;
+package com.example.projetoApiVendasEmSpring.security.userDetails;
 
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository;
-import com.example.projetoApiVendasEmSpring.services.SystemUser;
+import com.example.projetoApiVendasEmSpring.SystemUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

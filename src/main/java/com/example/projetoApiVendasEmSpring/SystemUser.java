@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring;
 
 import java.util.UUID;
 

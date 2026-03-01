@@ -1,7 +1,7 @@
 package com.example.projetoApiVendasEmSpring.product.repository;
 
 import com.example.projetoApiVendasEmSpring.product.entity.Product;
-import com.example.projetoApiVendasEmSpring.repositories.BaseRepository;
+import com.example.projetoApiVendasEmSpring.common.BaseRepository;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -3,9 +3,8 @@ package com.example.projetoApiVendasEmSpring.salesOrder.dto;
 import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.simplifyCustomerOutputDto.SimplifyCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.financialTransaction.dto.FinancialTransactionOutputDto;
-import com.example.projetoApiVendasEmSpring.salesOrderItem.dto.SalesOrderItemOutputDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SimplifySellerOutputDto;
-import com.example.projetoApiVendasEmSpring.salesOrder.entities.SalesOrderStatus;
+import com.example.projetoApiVendasEmSpring.salesOrder.entitiy.SalesOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.salesOrderItem.dto;
+package com.example.projetoApiVendasEmSpring.salesOrder.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;

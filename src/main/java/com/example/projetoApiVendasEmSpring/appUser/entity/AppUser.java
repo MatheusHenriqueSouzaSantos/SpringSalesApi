@@ -1,6 +1,6 @@
 package com.example.projetoApiVendasEmSpring.appUser.entity;
 
-import com.example.projetoApiVendasEmSpring.entities.BaseEntity;
+import com.example.projetoApiVendasEmSpring.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
