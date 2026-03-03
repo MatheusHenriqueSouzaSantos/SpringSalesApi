@@ -15,9 +15,6 @@ spring:
       hibernate:
         jdbc:
           time_zone : UTC
-  mvc:
-    servlet:
-      path: /api
 jwt:
   secret-key: ${JWT_KEY}
   expiration: 1800000
@@ -25,4 +22,3 @@ jwt:
 admin-user:
   password: ${ADMIN_PASSWORD}
   email: ${ADMIN_EMAIL}
-

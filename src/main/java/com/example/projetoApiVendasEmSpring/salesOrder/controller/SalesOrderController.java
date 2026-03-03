@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/sales-orders")
+@RequestMapping("/api/sales-orders")
 public class SalesOrderController {
     private final SalesOrderService service;
 
