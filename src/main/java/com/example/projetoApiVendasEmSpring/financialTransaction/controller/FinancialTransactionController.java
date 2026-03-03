@@ -26,7 +26,7 @@ public class FinancialTransactionController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<List<InstallmentOutputDto>> payInstallment(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<FinancialTransactionOutputDto> payInstallment(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.payInstallment(id,loggedUser));
     }
 }

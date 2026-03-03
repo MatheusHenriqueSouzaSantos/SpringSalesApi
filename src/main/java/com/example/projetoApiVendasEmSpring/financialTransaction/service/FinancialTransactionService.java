@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface FinancialTransactionService {
     FinancialTransactionOutputDto findById(UUID id);
 
-    List<InstallmentOutputDto> payInstallment(UUID financialTransactionId, UserDetailsImpl loggedUser);
+    FinancialTransactionOutputDto payInstallment(UUID financialTransactionId, UserDetailsImpl loggedUser);
 }

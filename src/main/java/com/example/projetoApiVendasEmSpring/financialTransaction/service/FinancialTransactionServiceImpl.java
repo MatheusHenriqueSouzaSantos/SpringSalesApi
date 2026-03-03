@@ -33,16 +33,13 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
 
     private final FinancialTransactionRepository repository;
 
-    private final InstallmentRepository installmentRepository;
-
     private final AppUserRepository appUserRepository;
 
     private final SalesOrderRepository salesOrderRepository;
 
-    public FinancialTransactionServiceImpl(FinancialTransactionRepository repository, InstallmentRepository installmentRepository,
+    public FinancialTransactionServiceImpl(FinancialTransactionRepository repository,
                                            AppUserRepository appUserRepository, SalesOrderRepository salesOrderRepository) {
         this.repository = repository;
-        this.installmentRepository = installmentRepository;
         this.appUserRepository = appUserRepository;
         this.salesOrderRepository = salesOrderRepository;
     }
@@ -57,7 +54,7 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
 
     @Transactional
     @Override
-    public List<InstallmentOutputDto> payInstallment(UUID financialTransactionId, UserDetailsImpl loggedUser) {
+    public FinancialTransactionOutputDto payInstallment(UUID financialTransactionId, UserDetailsImpl loggedUser) {
         FinancialTransaction financialTransaction=repository.findById(financialTransactionId)
                 .orElseThrow(()->new ResourceNotFoundException("Financial transaction not found"));
         if(!financialTransaction.isActive()){
@@ -88,7 +85,7 @@ public class FinancialTransactionServiceImpl implements FinancialTransactionServ
         if(installmentCount==paidInstallmentCount){
             financialTransaction.setStatus(FinancialTransactionStatus.PAID);
         }
-        return installments.stream().map(this::installmentEntityToDto).toList();
+        return financialTransactionEntityToDto(financialTransaction);
     }
 
     private FinancialTransactionOutputDto financialTransactionEntityToDto(FinancialTransaction financialTransaction){
