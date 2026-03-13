@@ -14,16 +14,14 @@ import lombok.Setter;
 @Table(name = "seller")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 public class Seller extends BaseEntity {
-    @Setter
     @Column(name = "full_name", nullable = false, length = 150)
     private String fullName;
-    @Column(name = "cpf", nullable = false,updatable = false, length = 11)
+    @Column(name = "cpf", nullable = false, length = 11)
     private String cpf;
-    @Setter
     @Column(name = "email", nullable = false, length = 200)
     private String email;
-    @Setter
     @Column(name = "phone",nullable = false,length = 25)
     private String phone;
 

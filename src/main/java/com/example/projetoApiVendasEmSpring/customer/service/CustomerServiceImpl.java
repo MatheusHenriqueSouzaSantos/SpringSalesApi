@@ -199,12 +199,12 @@ public class CustomerServiceImpl implements CustomerService {
         if(!validation.validateCpf(dto.cpf())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
         }
-        Optional<IndividualCustomer> customerOptional=individualCustomerRepository.findByCpf(dto.cpf());
-        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+        Optional<IndividualCustomer> customerWithCpfReceived=individualCustomerRepository.findByCpf(dto.cpf());
+        if(customerWithCpfReceived.isPresent() && customerWithCpfReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The cpf received is already registered");
         }
-        customerOptional=individualCustomerRepository.findByEmail(dto.email());
-        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+        Optional<IndividualCustomer> customerWithEmailReceived=individualCustomerRepository.findByEmail(dto.email());
+        if(customerWithEmailReceived.isPresent() && customerWithEmailReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         if(corporateCustomerRepository.existsByEmail(dto.email())){
@@ -237,8 +237,15 @@ public class CustomerServiceImpl implements CustomerService {
         if(!customerUpdate.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is inactive, active it first to update");
         }
-        Optional<CorporateCustomer> customerOptional=corporateCustomerRepository.findByEmail(dto.email());
-        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+        if(!validation.validateCnpj(dto.cnpj())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
+        }
+        Optional<CorporateCustomer> customerWithCnpjReceived=corporateCustomerRepository.findByCnpj(dto.cnpj());
+        if(customerWithCnpjReceived.isPresent() && customerWithCnpjReceived.get().getId()!=id){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The cnpj received is already registered");
+        }
+        Optional<CorporateCustomer> customerWithEmailReceived=corporateCustomerRepository.findByEmail(dto.email());
+        if(customerWithEmailReceived.isPresent() && customerWithEmailReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         if(individualCustomerRepository.existsByEmail(dto.email())){

@@ -1,8 +1,7 @@
 package com.example.projetoApiVendasEmSpring.seller.service;
 
-import com.example.projetoApiVendasEmSpring.seller.dto.SellerCreateDto;
+import com.example.projetoApiVendasEmSpring.seller.dto.SellerInputDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SellerOutputDto;
-import com.example.projetoApiVendasEmSpring.seller.dto.SellerUpdateDto;
 import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 
 import java.util.List;
@@ -19,9 +18,9 @@ public interface SellerService {
 
     SellerOutputDto findActiveSellerByCpf(String cpf);
 
-    SellerOutputDto createSeller(SellerCreateDto dto, UserDetailsImpl loggedUser);
+    SellerOutputDto createSeller(SellerInputDto dto, UserDetailsImpl loggedUser);
 
-    SellerOutputDto updateSeller(UUID id, SellerUpdateDto dto, UserDetailsImpl loggedUser);
+    SellerOutputDto updateSeller(UUID id, SellerInputDto dto, UserDetailsImpl loggedUser);
 
     void deActivateSeller(UUID id, UserDetailsImpl loggedUser);
 

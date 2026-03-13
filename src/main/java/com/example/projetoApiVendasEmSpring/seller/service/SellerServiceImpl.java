@@ -1,9 +1,8 @@
 package com.example.projetoApiVendasEmSpring.seller.service;
 
 import com.example.projetoApiVendasEmSpring.appUser.dto.AuditAppUserDto;
-import com.example.projetoApiVendasEmSpring.seller.dto.SellerCreateDto;
+import com.example.projetoApiVendasEmSpring.seller.dto.SellerInputDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SellerOutputDto;
-import com.example.projetoApiVendasEmSpring.seller.dto.SellerUpdateDto;
 import com.example.projetoApiVendasEmSpring.appUser.entity.AppUser;
 import com.example.projetoApiVendasEmSpring.seller.entity.Seller;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
@@ -75,7 +74,7 @@ public class SellerServiceImpl implements SellerService {
     }
     @Transactional
     @Override
-    public SellerOutputDto createSeller(SellerCreateDto dto, UserDetailsImpl loggedUser) {
+    public SellerOutputDto createSeller(SellerInputDto dto, UserDetailsImpl loggedUser) {
         if(!documentValidation.validateCpf(dto.cpf())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The cpf must be valid");
         }
@@ -94,12 +93,19 @@ public class SellerServiceImpl implements SellerService {
     }
     @Transactional
     @Override
-    public SellerOutputDto updateSeller(UUID id, SellerUpdateDto dto, UserDetailsImpl loggedUser) {
+    public SellerOutputDto updateSeller(UUID id, SellerInputDto dto, UserDetailsImpl loggedUser) {
         Seller updatedSeller=getSellerAccordingMethodOrThrow(()->repository.findById(id));
         if(!updatedSeller.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"the Seller must be active to update");
         }
-        Optional<Seller> sellerExistsWithEmailReceived=repository.findByEmail(dto.email());
+        if(!documentValidation.validateCpf(dto.cpf())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The cpf must be valid");
+        }
+        Optional<Seller> sellerExistsWithCpfReceived=repository.findByCpf(dto.cpf());
+        if(sellerExistsWithCpfReceived.isPresent() && sellerExistsWithCpfReceived.get().getId()!=id){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a seller with this cpf");
+        }
+        Optional<Seller> sellerExistsWithEmailReceived =repository.findByEmail(dto.email());
         if(sellerExistsWithEmailReceived.isPresent() && sellerExistsWithEmailReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"already exists a seller with this email");
         }
@@ -108,6 +114,7 @@ public class SellerServiceImpl implements SellerService {
         updatedSeller.setFullName(dto.fullName());
         updatedSeller.setEmail(dto.email());
         updatedSeller.setPhone(dto.phone());
+        updatedSeller.setCpf(dto.cpf());
         return entityToDto(updatedSeller);
     }
 

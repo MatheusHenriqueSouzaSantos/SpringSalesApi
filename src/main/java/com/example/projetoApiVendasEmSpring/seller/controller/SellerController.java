@@ -1,8 +1,7 @@
 package com.example.projetoApiVendasEmSpring.seller.controller;
 
-import com.example.projetoApiVendasEmSpring.seller.dto.SellerCreateDto;
+import com.example.projetoApiVendasEmSpring.seller.dto.SellerInputDto;
 import com.example.projetoApiVendasEmSpring.seller.dto.SellerOutputDto;
-import com.example.projetoApiVendasEmSpring.seller.dto.SellerUpdateDto;
 import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.seller.service.SellerService;
 import jakarta.validation.Valid;
@@ -51,7 +50,7 @@ public class SellerController {
     }
 
     @PostMapping
-    public ResponseEntity<SellerOutputDto> createSeller(@RequestBody @Valid SellerCreateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<SellerOutputDto> createSeller(@RequestBody @Valid SellerInputDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         SellerOutputDto createdSeller =service.createSeller(dto,loggedUser);
         URI location=URI.create("api/sellers/"+ createdSeller.id());
         return ResponseEntity.created(location).body(createdSeller);
@@ -59,7 +58,7 @@ public class SellerController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<SellerOutputDto> updateSeller(@PathVariable UUID id, @RequestBody @Valid SellerUpdateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<SellerOutputDto> updateSeller(@PathVariable UUID id, @RequestBody @Valid SellerInputDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.updateSeller(id,dto,loggedUser));
     }
 
