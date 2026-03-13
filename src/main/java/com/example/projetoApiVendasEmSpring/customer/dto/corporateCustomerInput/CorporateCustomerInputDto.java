@@ -4,7 +4,7 @@ import com.example.projetoApiVendasEmSpring.address.dto.AddressInputDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-public record CorporateCustomerCreateDto(
+public record CorporateCustomerInputDto(
         @NotNull(message = "the address must not be null")
         @Valid
         AddressInputDto address,

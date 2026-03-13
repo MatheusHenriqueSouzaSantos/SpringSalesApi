@@ -3,10 +3,8 @@ package com.example.projetoApiVendasEmSpring.customer.controller;
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.CorporateCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.CustomerOutPutDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.IndividualCustomerOutputDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerUpdateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerUpdateDto;
+import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerInputDto;
+import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerInputDto;
 import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 import com.example.projetoApiVendasEmSpring.customer.service.CustomerService;
 import jakarta.validation.Valid;
@@ -65,27 +63,27 @@ public class CustomerController {
     }
 
     @PostMapping("/individual-customer")
-    public ResponseEntity<IndividualCustomerOutputDto> createIndividualCustomer(@RequestBody @Valid IndividualCustomerCreateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<IndividualCustomerOutputDto> createIndividualCustomer(@RequestBody @Valid IndividualCustomerInputDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         IndividualCustomerOutputDto customerDto=service.createIndividualCustomer(dto,loggedUser);
         URI location=URI.create("api/customers/"+customerDto.getId());
         return ResponseEntity.created(location).body(customerDto);
     }
 
     @PostMapping("/corporate-customer")
-    public ResponseEntity<CorporateCustomerOutputDto> createCorporateCustomer(@RequestBody @Valid CorporateCustomerCreateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
+    public ResponseEntity<CorporateCustomerOutputDto> createCorporateCustomer(@RequestBody @Valid CorporateCustomerInputDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         CorporateCustomerOutputDto customerDto=service.createCorporateCustomer(dto,loggedUser);
         URI location=URI.create("api/customers/"+customerDto.getId());
         return ResponseEntity.created(location).body(customerDto);
     }
 
     @PutMapping("/individual-customer/{id}")
-    public ResponseEntity<IndividualCustomerOutputDto> updateIndividualCustomer(@PathVariable UUID id, @RequestBody @Valid IndividualCustomerUpdateDto dto,
+    public ResponseEntity<IndividualCustomerOutputDto> updateIndividualCustomer(@PathVariable UUID id, @RequestBody @Valid IndividualCustomerInputDto dto,
                                                                                  @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.updateIndividualCustomer(id,dto,loggedUser));
     }
 
     @PutMapping("/corporate-customer/{id}")
-    public ResponseEntity<CorporateCustomerOutputDto> updateCorporateCustomer(@PathVariable UUID id, @RequestBody @Valid CorporateCustomerUpdateDto dto,
+    public ResponseEntity<CorporateCustomerOutputDto> updateCorporateCustomer(@PathVariable UUID id, @RequestBody @Valid CorporateCustomerInputDto dto,
                                                                                  @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.updatedCorporateCustomer(id,dto,loggedUser));
     }

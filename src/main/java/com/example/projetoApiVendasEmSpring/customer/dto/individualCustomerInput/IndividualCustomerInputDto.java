@@ -4,7 +4,7 @@ import com.example.projetoApiVendasEmSpring.address.dto.AddressInputDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-public record IndividualCustomerUpdateDto(
+public record IndividualCustomerInputDto(
         @NotNull(message = "the address must not be null")
         @Valid
         AddressInputDto address,
@@ -17,6 +17,10 @@ public record IndividualCustomerUpdateDto(
         String phone,
         @NotBlank(message = "the full name must not be blank")
         @Size(min = 1,max = 150, message = "the full name must contain between 1 and 150 characters")
-        String fullName
+        String fullName,
+        @NotBlank(message = "the cpf must not be blank")
+        @Size(min = 11, max = 11, message = "the cpf must contain 11 characters")
+        @Pattern(regexp = "\\d+",message = "the cpf must contain only numbers")
+        String cpf
 ) {
 }
