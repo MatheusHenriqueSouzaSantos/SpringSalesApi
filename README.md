@@ -9,6 +9,7 @@ Builth with Spring Boot, Spring Security And Jwt Authentication.
 - Managing Orders Sales, and their Financial Transactions, Customers And their Address, Products And Stock, Sellers.
 - Managing Financial Transactions with their Installments with possibility Cash or Installment Payment  
 - Managing Acess by System Users with diferent roles.
+- Building: Audit Logs
   
 ## Entity Relationship Diagram
 
@@ -20,6 +21,7 @@ Builth with Spring Boot, Spring Security And Jwt Authentication.
 - Java 21
 - Spring Boot
 - Spring Security with JWT
+- Fly Way
 - PostgreSql
 - PostMan
 - Maven
