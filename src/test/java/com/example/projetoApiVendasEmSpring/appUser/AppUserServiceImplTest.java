@@ -1,4 +1,4 @@
-package com.example.projetoApiVendasEmSpring.services;
+package com.example.projetoApiVendasEmSpring.appUser;
 
 import com.example.projetoApiVendasEmSpring.SystemUser;
 import com.example.projetoApiVendasEmSpring.appUser.dto.AppUserInputDto;
