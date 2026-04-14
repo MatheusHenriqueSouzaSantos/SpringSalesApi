@@ -13,8 +13,8 @@ Builth with Spring Boot, Spring Security And Jwt Authentication.
 - Managing Acess by System Users with diferent roles.
 
 ## Feature Under Development
-- Audit Logs
-  
+- Unit Tests
+- Audit Logs  
 ## Entity Relationship Diagram
 
 <img width="2788" height="2301" alt="DER drawio" src="https://github.com/user-attachments/assets/2835bc6e-535c-4919-ae2f-e18a1ef208b1" />
