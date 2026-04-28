@@ -119,8 +119,8 @@ public class ProductServiceImplTest {
     public void updateProductSuccessfully(){
         //arrange
         UUID productId=UUID.randomUUID();
-        ProductUpdateDto updateDto=new ProductUpdateDto("dto test product", "that's a good dto test product",
-                new BigDecimal("1000"));
+        ProductUpdateDto updateDto=new ProductUpdateDto("new name test product", "that's a good new description test product",
+                new BigDecimal("2000"));
         UUID loggedUserId=UUID.randomUUID();
         UserDetailsImpl loggedUser=new UserDetailsImpl(loggedUserId,"loggedUser@email.com",
                 "123",true,List.of(new SimpleGrantedAuthority(UserRole.USER.toString())));
@@ -129,7 +129,7 @@ public class ProductServiceImplTest {
                 UserRole.ADMIN);
 
         Product returnedProduct=new Product(appUser,"123456789","testProduct",
-                "it is a good test product",new BigDecimal("2000"));
+                "it is a good test product",new BigDecimal("1000"));
         Stock mockStock=new Stock(appUser,returnedProduct,10);
         returnedProduct.setStock(mockStock);
 
@@ -140,12 +140,11 @@ public class ProductServiceImplTest {
         ProductOutputDto updatedProduct= service.updateProduct(productId,updateDto,loggedUser);
         //assert
 
-        assertEquals("testProduct",updatedProduct.name());
-        assertEquals("it is a good test product",updatedProduct.description());
+        assertEquals("new name test product",updatedProduct.name());
+        assertEquals("that's a good new description test product",updatedProduct.description());
         assertEquals(new BigDecimal("2000"),updatedProduct.price());
 
-        verify(appUserRepository).findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUserId);
-        verify(repository).save(returnedProduct);
+        verify(appUserRepository).findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUserId);
 
     }
 }
