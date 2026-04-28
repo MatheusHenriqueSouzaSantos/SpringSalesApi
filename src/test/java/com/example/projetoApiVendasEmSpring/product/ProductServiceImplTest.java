@@ -8,6 +8,7 @@ import com.example.projetoApiVendasEmSpring.appUser.repository.AppUserRepository
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.product.dto.ProductCreateDto;
 import com.example.projetoApiVendasEmSpring.product.dto.ProductOutputDto;
+import com.example.projetoApiVendasEmSpring.product.dto.ProductUpdateDto;
 import com.example.projetoApiVendasEmSpring.product.entity.Product;
 import com.example.projetoApiVendasEmSpring.product.repository.ProductRepository;
 import com.example.projetoApiVendasEmSpring.product.service.ProductServiceImpl;
@@ -111,5 +112,40 @@ public class ProductServiceImplTest {
         assertEquals(expectedProductOutputDto.description(),savedProduct.description());
         assertEquals(expectedProductOutputDto.price(),savedProduct.price());
         assertNotNull(savedProduct.stock());
+    }
+
+    @Test
+    @DisplayName("should Update a product successfully")
+    public void updateProductSuccessfully(){
+        //arrange
+        UUID productId=UUID.randomUUID();
+        ProductUpdateDto updateDto=new ProductUpdateDto("dto test product", "that's a good dto test product",
+                new BigDecimal("1000"));
+        UUID loggedUserId=UUID.randomUUID();
+        UserDetailsImpl loggedUser=new UserDetailsImpl(loggedUserId,"loggedUser@email.com",
+                "123",true,List.of(new SimpleGrantedAuthority(UserRole.USER.toString())));
+
+        AppUser appUser=new AppUser(null,"testAppUser","testAppUSer@email.com","456",
+                UserRole.ADMIN);
+
+        Product returnedProduct=new Product(appUser,"123456789","testProduct",
+                "it is a good test product",new BigDecimal("2000"));
+        Stock mockStock=new Stock(appUser,returnedProduct,10);
+        returnedProduct.setStock(mockStock);
+
+        when(repository.findById(productId)).thenReturn(Optional.of(returnedProduct));
+        when(appUserRepository.findAppUserByIdExceptSystemUser(SystemUser.ID,loggedUserId))
+                .thenReturn(Optional.of(appUser));
+        //act
+        ProductOutputDto updatedProduct= service.updateProduct(productId,updateDto,loggedUser);
+        //assert
+
+        assertEquals("testProduct",updatedProduct.name());
+        assertEquals("it is a good test product",updatedProduct.description());
+        assertEquals(new BigDecimal("2000"),updatedProduct.price());
+
+        verify(appUserRepository).findActiveAppUserByIdExceptSystemUser(SystemUser.ID,loggedUserId);
+        verify(repository).save(returnedProduct);
+
     }
 }
