@@ -32,12 +32,10 @@ public class StockController {
         return ResponseEntity.ok(service.findByProductId(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/increase/{id}")
     public ResponseEntity<StockOutputDto> increase(@PathVariable UUID id, @RequestBody @Valid StockInputDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.increaseQuantity(id,dto,loggedUser));
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/decrease/{id}")
     public ResponseEntity<StockOutputDto> decrease(@PathVariable UUID id,@RequestBody @Valid StockInputDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.decreaseQuantity(id,dto,loggedUser));

@@ -3,10 +3,8 @@ package com.example.projetoApiVendasEmSpring.customer.service;
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.CorporateCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.CustomerOutPutDto;
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.IndividualCustomerOutputDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerUpdateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerUpdateDto;
+import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerInputDto;
+import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerInputDto;
 import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
 
 import java.util.List;
@@ -29,13 +27,13 @@ public interface CustomerService {
 
     CorporateCustomerOutputDto findActiveCustomerByCnpj(String cnpj);
 
-    IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerCreateDto dto, UserDetailsImpl loggedUser);
+    IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerInputDto dto, UserDetailsImpl loggedUser);
 
-    CorporateCustomerOutputDto createCorporateCustomer(CorporateCustomerCreateDto dto, UserDetailsImpl loggedUser);
+    CorporateCustomerOutputDto createCorporateCustomer(CorporateCustomerInputDto dto, UserDetailsImpl loggedUser);
 
-    IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerUpdateDto dto, UserDetailsImpl loggedUser);
+    IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerInputDto dto, UserDetailsImpl loggedUser);
 
-    CorporateCustomerOutputDto updatedCorporateCustomer(UUID id,CorporateCustomerUpdateDto dto, UserDetailsImpl loggedUser);
+    CorporateCustomerOutputDto updatedCorporateCustomer(UUID id,CorporateCustomerInputDto dto, UserDetailsImpl loggedUser);
 
     void deActivateCustomer(UUID id, UserDetailsImpl loggedUser);
 

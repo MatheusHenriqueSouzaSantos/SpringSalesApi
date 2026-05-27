@@ -12,17 +12,18 @@ import lombok.*;
 @Getter
 @Entity
 @DiscriminatorValue("CORPORATE_CUSTOMER")
+@Setter
 public class CorporateCustomer extends Customer {
-    @Setter
+
     @Column(name = "legal_name", nullable = false, length = 150)
     private String legalName;
-    @Setter
+
     @Column(name = "trade_name", nullable = true, length = 70)
     private String tradeName;
-    @Setter
+
     @Column(name = "state_registration", nullable = true, length = 15)
     private String stateRegistration;
-    @Column(name = "cnpj", nullable = false,updatable = false,length = 14)
+    @Column(name = "cnpj", nullable = false,length = 14)
     private String cnpj;
 
     public CorporateCustomer(AppUser createdBy, String email, String phone, String legalName, String tradeName, String stateRegistration, String cnpj) {

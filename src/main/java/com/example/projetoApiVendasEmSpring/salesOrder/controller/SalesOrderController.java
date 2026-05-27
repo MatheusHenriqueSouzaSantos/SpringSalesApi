@@ -44,7 +44,7 @@ public class SalesOrderController {
                                                       @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.update(id,dto,loggedUser));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelSalesOrder(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUSer){
         service.cancelSalesOrder(id,loggedUSer);

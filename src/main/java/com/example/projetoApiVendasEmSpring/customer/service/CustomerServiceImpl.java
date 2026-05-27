@@ -16,10 +16,8 @@ import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.Custo
 import com.example.projetoApiVendasEmSpring.customer.dto.customerOutputDto.IndividualCustomerOutputDto;
 import com.example.projetoApiVendasEmSpring.address.dto.AddressInputDto;
 import com.example.projetoApiVendasEmSpring.address.dto.AddressOutputDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerUpdateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerCreateDto;
-import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerUpdateDto;
+import com.example.projetoApiVendasEmSpring.customer.dto.corporateCustomerInput.CorporateCustomerInputDto;
+import com.example.projetoApiVendasEmSpring.customer.dto.individualCustomerInput.IndividualCustomerInputDto;
 import com.example.projetoApiVendasEmSpring.excepetions.BusinessException;
 import com.example.projetoApiVendasEmSpring.excepetions.ResourceNotFoundException;
 import com.example.projetoApiVendasEmSpring.security.userDetails.UserDetailsImpl;
@@ -144,7 +142,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerCreateDto dto, UserDetailsImpl loggedUser) {
+    public IndividualCustomerOutputDto createIndividualCustomer(IndividualCustomerInputDto dto, UserDetailsImpl loggedUser) {
         if(!validation.validateCpf(dto.cpf())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
         }
@@ -168,7 +166,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public CorporateCustomerOutputDto createCorporateCustomer(CorporateCustomerCreateDto dto, UserDetailsImpl loggedUser) {
+    public CorporateCustomerOutputDto createCorporateCustomer(CorporateCustomerInputDto dto, UserDetailsImpl loggedUser) {
         if(!validation.validateCnpj(dto.cnpj())){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Cnpj in invalid format");
         }
@@ -193,13 +191,20 @@ public class CustomerServiceImpl implements CustomerService {
         //use customer repository???
     @Transactional
     @Override
-    public IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
+    public IndividualCustomerOutputDto updateIndividualCustomer(UUID id,IndividualCustomerInputDto dto, UserDetailsImpl loggedUser) {
         IndividualCustomer customerUpdate= getIndividualCustomerByIdOrThrow(id);
         if(!customerUpdate.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is inactive, active it first to update");
         }
-        Optional<IndividualCustomer> customerOptional=individualCustomerRepository.findByEmail(dto.email());
-        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+        if(!validation.validateCpf(dto.cpf())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
+        }
+        Optional<IndividualCustomer> customerWithCpfReceived=individualCustomerRepository.findByCpf(dto.cpf());
+        if(customerWithCpfReceived.isPresent() && customerWithCpfReceived.get().getId()!=id){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The cpf received is already registered");
+        }
+        Optional<IndividualCustomer> customerWithEmailReceived=individualCustomerRepository.findByEmail(dto.email());
+        if(customerWithEmailReceived.isPresent() && customerWithEmailReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         if(corporateCustomerRepository.existsByEmail(dto.email())){
@@ -220,19 +225,27 @@ public class CustomerServiceImpl implements CustomerService {
         customerUpdate.setEmail(dto.email());
         customerUpdate.setPhone(dto.phone());
         customerUpdate.setFullName(dto.fullName());
+        customerUpdate.setCpf(dto.cpf());
 
         return entityToIndividualCustomerDto(customerUpdate);
     }
 
     @Transactional
     @Override
-    public CorporateCustomerOutputDto updatedCorporateCustomer(UUID id, CorporateCustomerUpdateDto dto, UserDetailsImpl loggedUser) {
+    public CorporateCustomerOutputDto updatedCorporateCustomer(UUID id, CorporateCustomerInputDto dto, UserDetailsImpl loggedUser) {
         CorporateCustomer customerUpdate= getCorporateCustomerByIdOrThrow(id);
         if(!customerUpdate.isActive()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The User is inactive, active it first to update");
         }
-        Optional<CorporateCustomer> customerOptional=corporateCustomerRepository.findByEmail(dto.email());
-        if(customerOptional.isPresent() && customerOptional.get().getId()!=id){
+        if(!validation.validateCnpj(dto.cnpj())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"Cpf in invalid format");
+        }
+        Optional<CorporateCustomer> customerWithCnpjReceived=corporateCustomerRepository.findByCnpj(dto.cnpj());
+        if(customerWithCnpjReceived.isPresent() && customerWithCnpjReceived.get().getId()!=id){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"The cnpj received is already registered");
+        }
+        Optional<CorporateCustomer> customerWithEmailReceived=corporateCustomerRepository.findByEmail(dto.email());
+        if(customerWithEmailReceived.isPresent() && customerWithEmailReceived.get().getId()!=id){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"The email received is already registered");
         }
         if(individualCustomerRepository.existsByEmail(dto.email())){

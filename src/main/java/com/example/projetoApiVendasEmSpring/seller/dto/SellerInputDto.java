@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record SellerCreateDto(
+public record SellerInputDto(
         @NotBlank(message = "full name must not be blank")
         @Size(min = 1,max = 150,message = "the full name must contain between 1 and 150 characters ")
         String fullName,

@@ -10,11 +10,11 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("INDIVIDUAL_CUSTOMER")
+@Setter
 public class IndividualCustomer extends Customer {
-    @Setter
     @Column(name = "full_name", nullable = false, length = 150)
     private String fullName;
-    @Column(name = "cpf", nullable = false,updatable = false, length = 11)
+    @Column(name = "cpf", nullable = false, length = 11)
     private String cpf;
 
     public IndividualCustomer(AppUser createdBy, String email, String phone, String fullName, String cpf) {
