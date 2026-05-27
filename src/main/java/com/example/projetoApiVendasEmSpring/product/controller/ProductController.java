@@ -58,7 +58,6 @@ public class ProductController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductOutputDto> createProduct(@RequestBody @Valid ProductCreateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         ProductOutputDto createdProduct=service.createProduct(dto,loggedUser);
@@ -66,20 +65,17 @@ public class ProductController {
         return ResponseEntity.created(location).body(createdProduct);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ProductOutputDto> updatedProduct(@PathVariable UUID id,@RequestBody @Valid ProductUpdateDto dto, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         return ResponseEntity.ok(service.updateProduct(id,dto,loggedUser));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deActivateProduct(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser ){
         service.deActivateProductById(id,loggedUser);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/reactivate/{id}")
     public ResponseEntity<Void> reActivateProduct(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser){
         service.reActivateProductById(id,loggedUser);

@@ -62,14 +62,12 @@ public class SellerController {
         return ResponseEntity.ok(service.updateSeller(id,dto,loggedUser));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deActivateSeller(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser ){
         service.deActivateSeller(id,loggedUser);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/reactivate/{id}")
     public ResponseEntity<Void> reActivateSeller(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl loggedUser) {
         service.reActivateSeller(id, loggedUser);

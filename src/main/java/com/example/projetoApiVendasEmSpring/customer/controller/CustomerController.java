@@ -88,14 +88,13 @@ public class CustomerController {
         return ResponseEntity.ok(service.updatedCorporateCustomer(id,dto,loggedUser));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deActivateCustomer(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
         service.deActivateCustomer(id,loggedUser);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PatchMapping("/reactivate/{id}")
     public ResponseEntity<Void> reActivateCustomer(@PathVariable UUID id,@AuthenticationPrincipal UserDetailsImpl loggedUser){
         service.reActivateCustomer(id,loggedUser);
